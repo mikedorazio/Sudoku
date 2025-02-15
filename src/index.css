@@ -1,6 +1,8 @@
 .app {
     text-align: center;
     margin: 20px;
+    --gaps: 1px;
+    --cell-width: 70px;
 }
 
 .board-keyboard-container {
@@ -22,34 +24,38 @@ button {
     column-gap: 20px;
 }
 
-.board {
+.sudoku-board {
     float: left;
-    --cell-width: 70px;
+    width: 646px;
     display: grid;
-    grid-template-columns: repeat(9, var(--cell-width));
-    border: 4px solid #0a0000;
-    width: 631px;
-    height: 654px;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: var(--gaps);
+    line-height: var(--cell-width);
+    text-align: center;
+    border-left: 4px solid black;
+    border-bottom: 4px solid black;
+    border-top: 4px solid black;
+    background-color: black;
+    overflow: hidden;
 }
 
-.tile-start {
-    background-color: rgb(208, 204, 204) ;
-}
-div:nth-child(3n) {
-    border-right: 2px solid black;
-}
 div.cell {
     width: var(--cell-width);
     height: var(--cell-width);
-    text-align: center;
-    font-size: 40px;
+    outline: 1px solid black;
+    font-size: 28px;
     font-weight: 600;
-    line-height: var(--cell-width);
-    border: 1px solid black;
+    float: left;
+    background-color: white;
+}
+
+div[class*="tile-start"] {
+    /* background-color: bisque; */
+    background-color: rgb(208, 204, 204);
 }
 
 div[class*="selected"] {
-    outline: none;
+    /* outline: none; */
     background-color: antiquewhite;
 }
 
@@ -58,21 +64,8 @@ div[class*="conflict"] {
     color: rgb(237, 62, 62);
 }
 
-div.row:nth-child(1),
-div.row:nth-child(10),
-div.row:nth-child(19),
-div.row:nth-child(28),
-div.row:nth-child(37),
-div.row:nth-child(46),
-div.row:nth-child(55),
-div.row:nth-child(64),
-div.row:nth-child(73) {
-    border-left: 0px solid black;
-}
-
-[rownumber="2"],
-[rownumber="5"] {
-    border-bottom: 1px solid black;
+div.spacer {
+    height: 4px;
 }
 
 .delete-button {
@@ -80,9 +73,20 @@ div.row:nth-child(73) {
     height: 60px;
     margin-top: 5px;
     font-size: 2em;
-    grid-column: span 3;  
+    grid-column: span 3;
 }
 
 .entry-subscript {
     font-size: 12px;
+}
+
+.subscript-circle {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+    position: relative;
+    bottom: 20px;
+    left: 50px;
 }

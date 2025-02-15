@@ -14,13 +14,14 @@ export default function Cell({ value, originalValue, entryIndex, selectedEntry, 
 
     if (conflict) {
         className = className + " conflict";
+        //className = className + " subscript-circle"
     }
 
-    console.log("Cell.showSubscripts", showSubscripts);
+    //console.log("Cell.showSubscripts", showSubscripts);
     //console.log("entryIndex", entryIndex, "row", row, "column", column, "rowColumn", rowColumn, "origValue", originalValue);
 
     return (
-        <div className={className} rowcol={rowColumn} value={value}> {value != 0 ? value : " "} 
+        <div key={entryIndex} className={className} rowcol={rowColumn} value={value}> {value != 0 ? value : " "} 
             {showSubscripts
             ?
             <sub className="entry-subscript">{entryIndex}</sub>

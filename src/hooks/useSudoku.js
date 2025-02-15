@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry) {
+export default function useSudoku(board, setBoard, chunks, setChunks, selectedEntry, setSelectedEntry) {
     const [conflictedEntries, setConflictedEntries] = useState([]);
     let currentNumber = 0;
 
@@ -40,10 +40,13 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         let row = getSelectedRow();
         let column = getSelectedColumn();
         let boardEntry = +row * 9 + +column;
-        console.log(selectedEntry);
+        console.log("setNewBoardEntry", selectedEntry, "key:", key);
         const newEntries = [...board];
+        //const newChunks = [...chunks];
         newEntries[boardEntry] = key;
+       // newChunks[row][column] = key;
         setBoard(newEntries);
+        //setChunks(newChunks);
     }
 
     // determines if two cells are in the same 3x3 subgrid
