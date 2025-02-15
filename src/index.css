@@ -1,0 +1,88 @@
+.app {
+    text-align: center;
+    margin: 20px;
+}
+
+.board-keyboard-container {
+    display: inline-block;
+}
+
+button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+}
+
+.keyboard {
+    float: left;
+    display: grid;
+    padding-left: 40px;
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 20px;
+    column-gap: 20px;
+}
+
+.board {
+    float: left;
+    --cell-width: 70px;
+    display: grid;
+    grid-template-columns: repeat(9, var(--cell-width));
+    border: 4px solid #0a0000;
+    width: 631px;
+    height: 654px;
+}
+
+.tile-start {
+    background-color: rgb(208, 204, 204) ;
+}
+div:nth-child(3n) {
+    border-right: 2px solid black;
+}
+div.cell {
+    width: var(--cell-width);
+    height: var(--cell-width);
+    text-align: center;
+    font-size: 40px;
+    font-weight: 600;
+    line-height: var(--cell-width);
+    border: 1px solid black;
+}
+
+div[class*="selected"] {
+    outline: none;
+    background-color: antiquewhite;
+}
+
+div[class*="conflict"] {
+    /* background-color: rgb(246, 204, 204); */
+    color: rgb(237, 62, 62);
+}
+
+div.row:nth-child(1),
+div.row:nth-child(10),
+div.row:nth-child(19),
+div.row:nth-child(28),
+div.row:nth-child(37),
+div.row:nth-child(46),
+div.row:nth-child(55),
+div.row:nth-child(64),
+div.row:nth-child(73) {
+    border-left: 0px solid black;
+}
+
+[rownumber="2"],
+[rownumber="5"] {
+    border-bottom: 1px solid black;
+}
+
+.delete-button {
+    width: 100%;
+    height: 60px;
+    margin-top: 5px;
+    font-size: 2em;
+    grid-column: span 3;  
+}
+
+.entry-subscript {
+    font-size: 12px;
+}
