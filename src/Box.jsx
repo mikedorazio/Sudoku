@@ -1,7 +1,7 @@
 import Cell from './Cell';
 
 export default function Box({chunk, originalValues, chunkIndex, selectedEntry, conflictedEntries, showSubscripts}) {
-    //console.log("Box.chunk", chunk, chunkIndex, selectedEntry, conflictedEntries, showSubscripts);
+    //console.log("Box.chunk", chunk, originalValues, chunkIndex, selectedEntry, conflictedEntries, showSubscripts);
 
     return (
         <>

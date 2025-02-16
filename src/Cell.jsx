@@ -18,7 +18,7 @@ export default function Cell({ value, originalValue, entryIndex, selectedEntry, 
     }
 
     //console.log("Cell.showSubscripts", showSubscripts);
-    //console.log("entryIndex", entryIndex, "row", row, "column", column, "rowColumn", rowColumn, "origValue", originalValue);
+    //console.log("Cell.entryIndex", entryIndex, "row", row, "column", column, "rowColumn", rowColumn, "origValue", originalValue);
 
     return (
         <div key={entryIndex} className={className} rowcol={rowColumn} value={value}> {value != 0 ? value : " "} 

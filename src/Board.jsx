@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Cell from "./Cell";
 import useSudoku from "./hooks/useSudoku";
 import initialBoard from "./data.js";
 import Keyboard from "./Keyboard";
@@ -10,14 +9,23 @@ export default function Board() {
     const [board, setBoard] = useState([...initialBoard]);
     const [chunks, setChunks] = useState(initializeChunks);
     const [showSubscripts, setShowSubscripts] = useState(false);
-    const [selectedEntry, setSelectedEntry] = useState("0,2");
-    const { handleKeyup, handleMouseup, conflictedEntries } = useSudoku(board, setBoard, chunks, setChunks, selectedEntry, setSelectedEntry);
+    const [selectedEntry, setSelectedEntry] = useState(getInitialSelection);
+    const { handleKeyup, handleMouseup, conflictedEntries } = useSudoku(board, setBoard, selectedEntry, setSelectedEntry);
 
     console.log("Board Component rendering");
-    
+
+    function getInitialSelection() {
+        const firstZero = initialBoard.findIndex(element => element === 0);
+        //console.log("Board.getInitialSelection", initialBoard, firstZero);
+        const row = Math.floor(firstZero / 9);
+        const col = firstZero % 9;
+        return row + "," + col;
+    }
+
     function initializeChunks() {
         let chunks = [];
         for (let i = 0; i < initialBoard.length; i += 3) {
+            //console.log("initializeChunks.board", board);
             chunks.push(initialBoard.slice(i, i + 3));
         }
         return chunks;
@@ -28,11 +36,12 @@ export default function Board() {
     }
 
     useEffect(() => {
-        console.log("Board useEffect is rendering");
+        //console.log("Board useEffect is rendering", board);
         let myChunks = [];
         for (let i = 0; i < initialBoard.length; i += 3) {
             myChunks.push(board.slice(i, i + 3));
         }
+        //console.log("Board.useEffect setting chunks", myChunks);
         setChunks(myChunks);
     }, [board]);
 
@@ -79,7 +88,6 @@ export default function Board() {
                 <label htmlFor="input-sub">
                     <input
                         id="input-sub"
-                        size="50"
                         type="checkbox"
                         name="showSubscripts"
                         value={showSubscripts}

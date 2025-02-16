@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function useSudoku(board, setBoard, chunks, setChunks, selectedEntry, setSelectedEntry) {
+export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry) {
     const [conflictedEntries, setConflictedEntries] = useState([]);
     let currentNumber = 0;
 
@@ -36,17 +36,14 @@ export default function useSudoku(board, setBoard, chunks, setChunks, selectedEn
     }
 
     function setNewBoardEntry(key) {
-        let entry = selectedEntry.split(",");
+        //let entry = selectedEntry.split(",");
         let row = getSelectedRow();
         let column = getSelectedColumn();
         let boardEntry = +row * 9 + +column;
         console.log("setNewBoardEntry", selectedEntry, "key:", key);
         const newEntries = [...board];
-        //const newChunks = [...chunks];
         newEntries[boardEntry] = key;
-       // newChunks[row][column] = key;
         setBoard(newEntries);
-        //setChunks(newChunks);
     }
 
     // determines if two cells are in the same 3x3 subgrid
@@ -111,6 +108,12 @@ export default function useSudoku(board, setBoard, chunks, setChunks, selectedEn
         console.log("cgfc.conflictsSet.end", conflictsSet, "currentValue", currentValue);
     }
 
+    function getGridCount() {
+        let boardCountArray = board.filter(function(element) {
+            return element !== 0;
+        });
+        return boardCountArray.length;
+    }
     function updateSelectedEntry(key) {
         let prevConflicts = new Set(conflictedEntries);
         let newConflicts = new Set();
@@ -131,6 +134,10 @@ export default function useSudoku(board, setBoard, chunks, setChunks, selectedEn
         });
         console.log("updateSelectedEntry.prevConflicts - End", prevConflicts);
         setConflictedEntries(Array.from(completeSetOfConflicts));
+        console.log("updateSelectedEntries. grid has the folling count of numbers", getGridCount() + 1);
+        if (getGridCount() + 1 == 81 && completeSetOfConflicts.size == 0) {
+            console.log("updateSelectedEntry.GAME OVER....Congratulations.......");
+        }
     }
 
     // handle keypad entry

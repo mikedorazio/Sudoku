@@ -15,9 +15,6 @@ export default function Keyboard() {
             })
         }
         <button className="delete-button" id="X"> X </button>
-
-        
-
         </>
     );
 }
