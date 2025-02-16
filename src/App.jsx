@@ -6,7 +6,7 @@ function App() {
     
       return (
         <div className="app">
-          <h1>Apostle John's (decent) Sudoku Game</h1>
+          <h1>Apostle John's Sudoku Game</h1>
           <Board  />
         </div>
       );

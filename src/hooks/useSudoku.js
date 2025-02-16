@@ -142,11 +142,14 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
 
     // handle keypad entry
     function handleKeyup({ key }) {
-        key = +key;
+        //key = +key;
         console.log("handleKeyUp", key);
         if (/^[0-9]$/.test(key)) {
             console.log("a number was pressed", key);
             updateSelectedEntry(key);
+        }
+        if (key == "Backspace" || key == "Delete") {
+            updateSelectedEntry(0);
         }
     }
 
