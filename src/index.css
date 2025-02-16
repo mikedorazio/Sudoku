@@ -2,7 +2,8 @@
     text-align: center;
     margin: 20px;
     --gaps: 1px;
-    --cell-width: 70px;
+    --cell-width: 75px;
+    font-family: sans-serif;
 }
 
 .board-keyboard-container {
@@ -26,7 +27,7 @@ button {
 
 .sudoku-board {
     float: left;
-    width: 646px;
+    width: 690px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: var(--gaps);
@@ -43,8 +44,8 @@ div.cell {
     width: var(--cell-width);
     height: var(--cell-width);
     outline: 1px solid black;
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 40px;
+    font-weight: 800;
     float: left;
     background-color: white;
 }
@@ -56,7 +57,7 @@ div[class*="tile-start"] {
 
 div[class*="selected"] {
     /* outline: none; */
-    background-color: antiquewhite;
+    background-color: #f8cd05;
 }
 
 div[class*="conflict"] {
