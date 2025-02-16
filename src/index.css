@@ -61,8 +61,8 @@ div[class*="selected"] {
 }
 
 div[class*="conflict"] {
-    /* background-color: rgb(246, 204, 204); */
     color: rgb(237, 62, 62);
+    animation: 0.5s fade-in forwards;
 }
 
 div.spacer {
@@ -90,4 +90,9 @@ div.spacer {
     position: relative;
     bottom: 20px;
     left: 50px;
+}
+
+@keyframes fade-in {
+    0% { opacity: 0;}
+    100% {opacity: 1;}
 }
