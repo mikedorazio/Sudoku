@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useSudoku from "./hooks/useSudoku";
-import initialBoard from "./data.js";
+import initialBoard, {keyboardNumbers, randomIndex} from "./data.js";
 import Keyboard from "./Keyboard";
 import Box from "./Box.jsx";
 import { Fragment } from "react";
@@ -8,11 +8,13 @@ import { Fragment } from "react";
 export default function Board() {
     const [board, setBoard] = useState([...initialBoard]);
     const [chunks, setChunks] = useState(initializeChunks);
+    const [keyboardCount, setKeyboardCount] = useState([...keyboardNumbers]);
     const [showSubscripts, setShowSubscripts] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState(getInitialSelection);
-    const { handleKeyup, handleMouseup, conflictedEntries } = useSudoku(board, setBoard, selectedEntry, setSelectedEntry);
+    const [previousNumber, setPreviousNumber] = useState(0);
+    const { handleKeyup, handleMouseup, conflictedEntries } = useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber);
 
-    console.log("Board Component rendering");
+    //console.log("Board Component rendering", keyboardCount, previousNumber);
 
     function getInitialSelection() {
         const firstZero = initialBoard.findIndex(element => element === 0);
@@ -56,8 +58,10 @@ export default function Board() {
     }, [handleKeyup, handleMouseup]);
 
     return (
+        <>
+        <h1>Apostle John's Sudoku Game (# {randomIndex+1}) </h1>
         <div className="board-keyboard-container">
-            <div className="sudoku-board">
+            <div className="sudoku-board" id="sudoku-board">
                 {chunks.map((chunk, index) => (
                     <Fragment key={index}>
                     <div className="box" rownumber={Math.floor(index / 9)}>
@@ -84,7 +88,7 @@ export default function Board() {
             </div>
 
             <div className="keyboard">
-                <Keyboard />
+                <Keyboard keyboardCount={keyboardCount} />
                 <label htmlFor="input-sub">
                     <input
                         id="input-sub"
@@ -97,5 +101,6 @@ export default function Board() {
                 </label>
             </div>
         </div>
+        </>
     );
 }

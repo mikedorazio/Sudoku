@@ -21,7 +21,7 @@ export default function Cell({ value, originalValue, entryIndex, selectedEntry, 
     //console.log("Cell.entryIndex", entryIndex, "row", row, "column", column, "rowColumn", rowColumn, "origValue", originalValue);
 
     return (
-        <div key={entryIndex} className={className} rowcol={rowColumn} value={value}> {value != 0 ? value : " "} 
+        <div key={entryIndex} className={className} rowcol={rowColumn} numbervalue={value}> {value != 0 ? value : " "} 
             {showSubscripts
             ?
             <sub className="entry-subscript">{entryIndex}</sub>

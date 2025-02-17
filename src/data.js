@@ -35,7 +35,12 @@ const boardData =
 
 console.log("in boardData");
 let boardSize = boardData.length;
-let randomIndex = Math.floor(Math.random() * boardSize);
+export let randomIndex = Math.floor(Math.random() * boardSize);
 let initialBoard = boardData[randomIndex];
+
+export let keyboardNumbers = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+for (let i = 1; i <= 9; i++) {
+    keyboardNumbers[i-1] = initialBoard.filter(v => v == i).length;
+}
 
 export default initialBoard;

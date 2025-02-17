@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry) {
+export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber) {
     const [conflictedEntries, setConflictedEntries] = useState([]);
     let currentNumber = 0;
 
@@ -30,13 +30,12 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         const col = getColumnFromIndex(index);
         const rowAndCol = row + "," + col;
         const element = document.querySelector(`[rowcol="${rowAndCol}"]`);
-        const value = element.getAttribute("value");
+        const value = element.getAttribute("numbervalue");
         //console.log("getValueFromIndex.index", index, "element", element, "val", value);
         return value;
     }
 
     function setNewBoardEntry(key) {
-        //let entry = selectedEntry.split(",");
         let row = getSelectedRow();
         let column = getSelectedColumn();
         let boardEntry = +row * 9 + +column;
@@ -74,10 +73,10 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             if (index == cellIndex) continue;
             let entryRow = Math.floor(index / 9);
             let entryColumn = index % 9;
-            console.log("cgfc.entryRow", entryRow, "entryColumn", entryColumn);
+            //console.log("cgfc.entryRow", entryRow, "entryColumn", entryColumn);
             if (areCellsInSameSubgrid(currentRow, currentColumn, entryRow, entryColumn)) {
                 // the board entry is in same 3x3 grid...check if there is a conflict
-                console.log("cgfc.checking index", index, "against value", currentValue);
+                //console.log("cgfc.checking index", index, "against value", currentValue);
                 if (currentBoard[index] == currentValue) {
                     hasConflicts = true;
                     console.log("cgfc.CONFLICT1 (grid):", index, "with number", currentValue);
@@ -138,6 +137,8 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         if (getGridCount() + 1 == 81 && completeSetOfConflicts.size == 0) {
             console.log("updateSelectedEntry.GAME OVER....Congratulations.......");
         }
+        // calculate keyboard count
+        calculateKeyboardCount(key);
     }
 
     // handle keypad entry
@@ -158,24 +159,27 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
     // 2. Mouse was clicked on the Keyboard area
     // 3. Mouse was clicked outside of both Board and Keyboard (ignore)
     function handleMouseup(event) {
-        console.log("mouseUp", event.target);
-
-        // 1. Board area was clicked.  Was an original number hit??
+        console.log("mouseUp", event);
         const selectedElement = event.target;
+        //Show Subscripts label or input field was selected...just return
         if (selectedElement.tagName == "LABEL" || selectedElement.tagName == "INPUT") return;
         const boardSelected = selectedElement.classList.contains("cell");
+        // 1. Board area was clicked.  Was an original number hit??
         if (boardSelected) {
-            console.log(selectedElement.tagName);
+            console.log("mouseup.tagName", selectedElement.tagName);
             const tagName = selectedElement.tagName;
             const isTileStart = selectedElement.classList.contains("tile-start");
             if (isTileStart) return;
             const selectedCell = event.target.getAttribute("rowcol");
+            const numberValue = event.target.getAttribute("numbervalue");
+            setPreviousNumber(numberValue);
+            console.log("handleMouseup.numberValue", numberValue);
             setSelectedEntry(selectedCell);
             return;
         }
 
         // 2. Mouse was clicked in the Keyboard area. Just forward to handleKeyup with the number
-        let buttonId = event.target.getAttribute("id");
+        let buttonId = event.target.getAttribute("number");
         //console.log("buttonId", buttonId);
         //console.log("event.target.textContent", event.target.textContent);
         if (buttonId) {
@@ -184,12 +188,36 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
                 return;
             }
             //console.log("Button with number hit...sending to handleKeyup");
+            setPreviousNumber(+buttonId)
             updateSelectedEntry(+buttonId);
             return;
         }
 
         // the board was not clicked on
         console.log("Board and Keyboard were NOT hit");
+    }
+
+    // calculate how many times each number appears in the puzzle...We must add the current key that was hit since
+    // the board state variable will not be update yet. We also must take into consideration any value that was
+    // previously in the cell that we just entered a number into. This is held in the previousNumber state variable
+    function calculateKeyboardCount(key) {
+        const numberBoard =  [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        for (let i = 0; i < board.length; i++) {
+            let j = board[i];
+            if (j == 0 ) continue;
+            numberBoard[j-1] = numberBoard[j-1] + 1;
+        }
+        if (key != 0) {
+            //console.log("calculateKeyboardCount.adding on to key", key);
+            numberBoard[key-1] = numberBoard[key-1] + 1;
+        }
+        if (previousNumber != 0) {
+            //console.log("calculateKeyboardCount subracting 1 from numberBoard prev ", previousNumber);
+            numberBoard[previousNumber-1] = numberBoard[previousNumber-1] - 1;
+        }
+        //console.log("calculateKeyboardCount", numberBoard, board);
+        setPreviousNumber(key);
+        setKeyboardCount(numberBoard);
     }
 
     return { handleKeyup, handleMouseup, conflictedEntries };
