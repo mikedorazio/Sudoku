@@ -38,6 +38,7 @@ button {
     border-top: 4px solid black;
     background-color: black;
     overflow: hidden;
+    background-color: #c0c0c0;
 }
 
 div.cell {
@@ -62,7 +63,7 @@ div[class*="selected"] {
 
 div[class*="conflict"] {
     color: rgb(237, 62, 62);
-    animation: 0.5s fade-in forwards;
+    animation: 0.5s fade-in;
 }
 
 div.spacer {

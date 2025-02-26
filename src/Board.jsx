@@ -14,7 +14,7 @@ export default function Board() {
     const [previousNumber, setPreviousNumber] = useState(0);
     const { handleKeyup, handleMouseup, conflictedEntries } = useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber);
 
-    //console.log("Board Component rendering", keyboardCount, previousNumber);
+    console.log("Board Component rendering", keyboardCount, board, previousNumber);
 
     function getInitialSelection() {
         const firstZero = initialBoard.findIndex(element => element === 0);
