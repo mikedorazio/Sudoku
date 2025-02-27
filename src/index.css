@@ -10,12 +10,6 @@
     display: inline-block;
 }
 
-button {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-}
-
 .keyboard {
     float: left;
     display: grid;
@@ -23,6 +17,7 @@ button {
     grid-template-columns: repeat(3, 70px);
     row-gap: 10px;
     column-gap: 10px;
+    /* background-color: #f8cd05; */
 }
 
 .sudoku-board {
@@ -33,9 +28,9 @@ button {
     column-gap: var(--gaps);
     line-height: var(--cell-width);
     text-align: center;
-    border-left: 4px solid black;
-    border-bottom: 4px solid black;
-    border-top: 4px solid black;
+    border-left: 5px solid black;
+    border-bottom: 5px solid black;
+    border-top: 5px solid black;
     background-color: black;
     overflow: hidden;
 }
@@ -48,6 +43,10 @@ div.cell {
     font-weight: 800;
     float: left;
     background-color: white;
+}
+
+div[class*="candidate-container"] {
+    display: none;
 }
 
 div[class*="tile-start"] {
@@ -66,7 +65,7 @@ div[class*="conflict"] {
 }
 
 div.spacer {
-    height: 4px;
+    height: 5px;
 }
 
 .delete-button {
@@ -90,6 +89,54 @@ div.spacer {
     position: relative;
     bottom: 20px;
     left: 50px;
+}
+
+button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+}
+
+/* button[number="1"] {
+    background-color: red;
+} */
+.candidate-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: bisque;
+    line-height: 22px;
+}
+
+.a {
+    width: 300px;
+    /* height: 70px; */
+    grid-template-columns: 1fr 1fr;
+    display: flex;
+    padding-bottom: 10px;
+    padding-left: 5px;
+}
+.buttons-keyboard-container {
+    float: left;
+    width: 700px;
+    /* background: blueviolet; */ 
+}
+
+.normal-button,
+.candidate-button {
+    width: 120px;
+    height: 35px;
+    margin: 0 auto;
+    display: inline;
+    font-size: 14px;
+}
+
+.normal-button {
+    background: black;
+    color: white;
+}
+.candidate-button {
+    background: white;
+    color: black;
 }
 
 @keyframes fade-in {

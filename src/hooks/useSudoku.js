@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber) {
     const [conflictedEntries, setConflictedEntries] = useState([]);
+    const [isNormalButton, setIsNormalButton] = useState(true);
     let currentNumber = 0;
 
     function getRowFromIndex(index) {
@@ -141,6 +142,20 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         calculateKeyboardCount(key);
     }
 
+    // if the Normal button is hit, the number keys are centered
+    // if the Candidate button is hit, the number keys are in grid formation
+    function handleNormalCandiateButtonClick(isNormalButton) {
+        let normalButton = document.getElementById("normal-button");
+        let candidateButton = document.getElementById("candidate-button");
+       
+        normalButton.style.background = isNormalButton ? "black" : "white";
+        normalButton.style.color = isNormalButton ? "white" : "black";
+        candidateButton.style.background = isNormalButton ? "white" : "black";
+        candidateButton.style.color = isNormalButton ? "black" : "white";
+
+        setIsNormalButton(isNormalButton);
+    }
+
     // handle keypad entry
     function handleKeyup({ key }) {
         //key = +key;
@@ -156,8 +171,9 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
 
     // handle mouse entry
     // 1. Mouse was clicked in the Board area
-    // 2. Mouse was clicked on the Keyboard area
-    // 3. Mouse was clicked outside of both Board and Keyboard (ignore)
+    // 2. Mouse was clicked on the Keyboard area on a number or x
+    // 3. Mouse was clicked in the Keyboard area on the Normal or Candidate button
+    // 4. Mouse was clicked outside of both Board and Keyboard (ignore)
     function handleMouseup(event) {
         console.log("mouseUp", event);
         const selectedElement = event.target;
@@ -193,6 +209,14 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             return;
         }
 
+        if (selectedElement.tagName == "BUTTON") {
+            const isNormalButton = selectedElement.classList.contains("normal-button");
+            const isCandidateButton = selectedElement.classList.contains("candidate-button");
+            console.log("Normal or Candiate button hit", isNormalButton, isCandidateButton);
+            handleNormalCandiateButtonClick(isNormalButton);
+            return;
+        }
+
         // the board was not clicked on
         console.log("Board and Keyboard were NOT hit");
     }
@@ -220,5 +244,5 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         setKeyboardCount(numberBoard);
     }
 
-    return { handleKeyup, handleMouseup, conflictedEntries };
+    return { handleKeyup, handleMouseup, conflictedEntries, isNormalButton };
 }

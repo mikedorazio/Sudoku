@@ -10,7 +10,7 @@ export default function Keyboard( {keyboardCount} ) {
         <>
         {numbers.map((num, index) => {
                 return (
-                    <button key={num} number={num} 
+                    <button key={num} number={num} display="normal"
                         disabled={keyboardCount[index] >= 9 ? "disabled" : null}>
                         {num}
                     </button>

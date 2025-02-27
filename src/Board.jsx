@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useSudoku from "./hooks/useSudoku";
-import initialBoard, {keyboardNumbers, randomIndex} from "./data.js";
+import initialBoard, { keyboardNumbers, randomIndex } from "./data.js";
 import Keyboard from "./Keyboard";
 import Box from "./Box.jsx";
 import { Fragment } from "react";
@@ -12,12 +12,20 @@ export default function Board() {
     const [showSubscripts, setShowSubscripts] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState(getInitialSelection);
     const [previousNumber, setPreviousNumber] = useState(0);
-    const { handleKeyup, handleMouseup, conflictedEntries } = useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber);
+    const { handleKeyup, handleMouseup, conflictedEntries, isNormalButton } = useSudoku(
+        board,
+        setBoard,
+        selectedEntry,
+        setSelectedEntry,
+        setKeyboardCount,
+        previousNumber,
+        setPreviousNumber
+    );
 
     console.log("Board Component rendering", keyboardCount, board, previousNumber);
 
     function getInitialSelection() {
-        const firstZero = initialBoard.findIndex(element => element === 0);
+        const firstZero = initialBoard.findIndex((element) => element === 0);
         //console.log("Board.getInitialSelection", initialBoard, firstZero);
         const row = Math.floor(firstZero / 9);
         const col = firstZero % 9;
@@ -59,48 +67,53 @@ export default function Board() {
 
     return (
         <>
-        <h1>Apostle John's Sudoku Game (# {randomIndex+1}) </h1>
-        <div className="board-keyboard-container">
-            <div className="sudoku-board" id="sudoku-board">
-                {chunks.map((chunk, index) => (
-                    <Fragment key={index}>
-                    <div className="box" rownumber={Math.floor(index / 9)}>
-                        <Box
-                            key={index}
-                            chunk={chunk}
-                            originalValues={initialBoard}
-                            chunkIndex={index}
-                            selectedEntry={selectedEntry}
-                            conflictedEntries={conflictedEntries}
-                            showSubscripts={showSubscripts}
-                        />
-                    </div>
-                    {index == 8 || index == 17 ? 
-                        <>
-                        <div className="spacer"> </div>
-                        <div className="spacer"> </div>
-                        <div className="spacer"> </div>
-                        </>
-                        : null
-                    }
-                    </Fragment>
-                ))}
-            </div>
+            <h1>Apostle John's Sudoku Game (# {randomIndex + 1}) </h1>
+            <div className="board-keyboard-container">
+                <div className="sudoku-board" id="sudoku-board">
+                    {chunks.map((chunk, index) => (
+                        <Fragment key={index}>
+                            <div className="box" rownumber={Math.floor(index / 9)}>
+                                <Box
+                                    key={index}
+                                    chunk={chunk}
+                                    originalValues={initialBoard}
+                                    chunkIndex={index}
+                                    selectedEntry={selectedEntry}
+                                    conflictedEntries={conflictedEntries}
+                                    showSubscripts={showSubscripts}
+                                />
+                            </div>
+                            {index == 8 || index == 17 ? (
+                                <>
+                                    <div className="spacer"> </div>
+                                    <div className="spacer"> </div>
+                                    <div className="spacer"> </div>
+                                </>
+                            ) : null}
+                        </Fragment>
+                    ))}
+                </div>
 
-            <div className="keyboard">
-                <Keyboard keyboardCount={keyboardCount} />
-                <label htmlFor="input-sub">
-                    <input
-                        id="input-sub"
-                        type="checkbox"
-                        name="showSubscripts"
-                        value={showSubscripts}
-                        onChange={handleSubscripts}
-                    />
-                    Show Subscripts
-                </label>
+                <div className="buttons-keyboard-container">
+                    <div className="a">
+                        <button className="normal-button" id="normal-button">Normal</button>
+                        <button className="candidate-button" id="candidate-button">Candidate</button>
+                    </div>
+                    <div className="keyboard">
+                        <Keyboard keyboardCount={keyboardCount} />
+                        <label htmlFor="input-sub">
+                            <input
+                                id="input-sub"
+                                type="checkbox"
+                                name="showSubscripts"
+                                value={showSubscripts}
+                                onChange={handleSubscripts}
+                            />
+                            Show Subscripts
+                        </label>
+                    </div>
+                </div>
             </div>
-        </div>
         </>
     );
 }
