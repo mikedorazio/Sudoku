@@ -114,32 +114,39 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         });
         return boardCountArray.length;
     }
-    function updateSelectedEntry(key) {
+    function updateNormalEntry(key) {
         let prevConflicts = new Set(conflictedEntries);
         let newConflicts = new Set();
         let completeSetOfConflicts = new Set();
-        console.log("updateSelectedEntry.prevConflicts - Start", prevConflicts);
+        console.log("updateNormalEntry.prevConflicts - Start", prevConflicts);
         currentNumber = key;
         setNewBoardEntry(key);
         // first check the current entry for conflicts
-        console.log("updateSelectedEntry.currentNumber", currentNumber);
+        console.log("updateNormalEntry.currentNumber", currentNumber);
         checkGridForConflicts(getSelectedIndex(), newConflicts);
         completeSetOfConflicts = new Set([...newConflicts]);
         // now check old conflicts and see if they are still conflicts
         prevConflicts.forEach((entry) => {
             newConflicts = new Set();
-            console.log("updateSelectedEntry.checking conflictedEntry", entry, " and its value is ", getValueFromIndex(entry));
+            console.log("updateNormalEntry.checking conflictedEntry", entry, " and its value is ", getValueFromIndex(entry));
             checkGridForConflicts(entry, newConflicts);
             completeSetOfConflicts = new Set([...completeSetOfConflicts, ...newConflicts]);
         });
-        console.log("updateSelectedEntry.prevConflicts - End", prevConflicts);
+        console.log("updateNormalEntry.prevConflicts - End", prevConflicts);
         setConflictedEntries(Array.from(completeSetOfConflicts));
         console.log("updateSelectedEntries. grid has the folling count of numbers", getGridCount() + 1);
         if (getGridCount() + 1 == 81 && completeSetOfConflicts.size == 0) {
-            console.log("updateSelectedEntry.GAME OVER....Congratulations.......");
+            console.log("updateNormalEntry.GAME OVER....Congratulations.......");
         }
         // calculate keyboard count
         calculateKeyboardCount(key);
+    }
+
+    function updateNormalButtonKeys() {
+
+    }
+    function updateCandidateButtonKeys() {
+
     }
 
     // if the Normal button is hit, the number keys are centered
@@ -153,6 +160,8 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         candidateButton.style.background = isNormalButton ? "white" : "black";
         candidateButton.style.color = isNormalButton ? "black" : "white";
 
+        isNormalButton ? updateNormalButtonKeys() : updateCandidateButtonKeys();
+
         setIsNormalButton(isNormalButton);
     }
 
@@ -162,10 +171,10 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         console.log("handleKeyUp", key);
         if (/^[0-9]$/.test(key)) {
             console.log("a number was pressed", key);
-            updateSelectedEntry(key);
+            updateNormalEntry(key);
         }
         if (key == "Backspace" || key == "Delete") {
-            updateSelectedEntry(0);
+            updateNormalEntry(0);
         }
     }
 
@@ -193,19 +202,18 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             setSelectedEntry(selectedCell);
             return;
         }
-
         // 2. Mouse was clicked in the Keyboard area. Just forward to handleKeyup with the number
         let buttonId = event.target.getAttribute("number");
         //console.log("buttonId", buttonId);
         //console.log("event.target.textContent", event.target.textContent);
         if (buttonId) {
             if (buttonId === "X") {
-                updateSelectedEntry(0);
+                updateNormalEntry(0);
                 return;
             }
             //console.log("Button with number hit...sending to handleKeyup");
             setPreviousNumber(+buttonId)
-            updateSelectedEntry(+buttonId);
+            updateNormalEntry(+buttonId);
             return;
         }
         // 3. Either the Normal or Candidate button was pressed

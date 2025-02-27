@@ -78,6 +78,7 @@ div.spacer {
     background-color: var(--button-color);
     border: none;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .entry-subscript {
@@ -104,6 +105,13 @@ div[number] {
     justify-content: center;
     align-items: center;
     display: flex;
+    cursor: pointer;
+}
+
+div[pointer="none"] {
+    pointer-events: none;
+    opacity: .5;
+    cursor: normal;
 }
 
 .candidate-container {
