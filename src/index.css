@@ -3,6 +3,7 @@
     margin: 20px;
     --gaps: 1px;
     --cell-width: 75px;
+    --button-color: #dfdfdf;
     font-family: sans-serif;
 }
 
@@ -69,11 +70,14 @@ div.spacer {
 }
 
 .delete-button {
-    width: 100%;
+    width: 95%;
     height: 60px;
     margin-top: 5px;
     font-size: 2em;
     grid-column: span 3;
+    background-color: var(--button-color);
+    border: none;
+    border-radius: 5px;
 }
 
 .entry-subscript {
@@ -91,15 +95,17 @@ div.spacer {
     left: 50px;
 }
 
-button {
+div[number] {
     width: 60px;
     height: 60px;
-    font-size: 24px;
+    font-size: 28px;
+    font-weight: 600;;
+    background-color: var(--button-color);
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 
-/* button[number="1"] {
-    background-color: red;
-} */
 .candidate-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

@@ -208,7 +208,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             updateSelectedEntry(+buttonId);
             return;
         }
-
+        // 3. Either the Normal or Candidate button was pressed
         if (selectedElement.tagName == "BUTTON") {
             const isNormalButton = selectedElement.classList.contains("normal-button");
             const isCandidateButton = selectedElement.classList.contains("candidate-button");
