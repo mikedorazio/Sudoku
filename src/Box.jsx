@@ -1,15 +1,16 @@
+import {Fragment} from 'react';
 import Cell from './Cell';
 import Candidate from './Candidate';
 
 export default function Box({chunk, originalValues, chunkIndex, selectedEntry, conflictedEntries, showSubscripts}) {
     //console.log("Box.chunk", chunk, originalValues, chunkIndex, selectedEntry, conflictedEntries, showSubscripts);
+    //const isCellCandidateTrue = candidateValues;
 
     return (
         <>
             {chunk.map((value, index) => (
-                <>
+                <Fragment key={index}>
                 <Cell
-                    key={chunkIndex}
                     value={value}
                     originalValue={originalValues[chunkIndex*3+index]}
                     entryIndex={chunkIndex*3 + index}
@@ -18,12 +19,10 @@ export default function Box({chunk, originalValues, chunkIndex, selectedEntry, c
                     showSubscripts={showSubscripts}
                 />
                 <Candidate
-                    key={chunkIndex*3 + index}
-                    value={value}
                     entryIndex={chunkIndex*3 + index}
                     selectedEntry={selectedEntry}
                 />
-                </>
+                </Fragment>
             ))} 
         </>
     )

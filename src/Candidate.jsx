@@ -1,6 +1,6 @@
-export default function Candidate() {
+export default function Candidate({entryIndex}) {
     return (
-        <div className="cell candidate-container" row="0">
+        <div className="cell candidate-container" entryindex={entryIndex} row="0">
             <div className="candidate" sub="1"></div>
             <div className="candidate" sub="2"></div>
             <div className="candidate" sub="3"></div>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber) {
+export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber,
+                            candidateValues, setCandidateValues)
+ {
     const [conflictedEntries, setConflictedEntries] = useState([]);
     const [isNormalButton, setIsNormalButton] = useState(true);
     let currentNumber = 0;
@@ -168,8 +170,21 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         setIsNormalButton(isNormalButton);
     }
 
+    // Handle the selection of a candidate number. If the array of candidate values does not contain the index of the
+    // currently selected cell, add it to the array, otherwise just update the array at that index.
     function handleCandidateNumber(number) {
-        
+        const index = getSelectedIndex();
+        console.log("handleCandidateNumber.index, candidateValues", index, candidateValues);
+        const candidateEntry = candidateValues.find((entry) => entry.id == index);
+        // the candidate entry does not exist...add it and return
+        if (candidateEntry == undefined) {
+            const newEntry = {id: index, isSelected: true, numbers: [number]};
+            console.log("setting new entry", newEntry);
+            setCandidateValues([...candidateValues, newEntry]);
+        }
+        // the candidate entry exists, add the number or take it way if it already exists
+        const candidateNumbers = candidateEntry.numbers;
+        console.log("candidate entry has numbers ", candidateNumbers);
     }
 
     // handle keypad entry
@@ -234,9 +249,10 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         const isCandidate = selectedElement.hasAttribute("candidate-number");
         console.log("selectedElement", selectedElement, "isCandidate", isCandidate);
         if (isCandidate) {
-            console.log("mouseUp candidate-number hit");
             const number = selectedElement.getAttribute("candidate-number");
+            console.log("mouseUp candidate-number hit", number);
             handleCandidateNumber(number);
+            return;
         }
 
         // 5. Either the Normal or Candidate button was pressed

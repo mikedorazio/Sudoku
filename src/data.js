@@ -53,4 +53,18 @@ for (let i = 1; i <= 9; i++) {
     keyboardNumbers[i-1] = initialBoard.filter(v => v == i).length;
 }
 
+export let candidates = [
+    {id: 0, isSelected: false, numbers: [1,2]},
+    {id: 1, isSelected: false, numbers: [3,4,5]},
+    {id: 2, isSelected: false, numbers: [5,9]},
+    {id: 3, isSelected: false, numbers: [1,2]},
+    {id: 4, isSelected: false, numbers: [3,4,5]},
+    {id: 5, isSelected: false, numbers: [0]},
+    {id: 6, isSelected: false, numbers: [3,4,5]},
+    {id: 7, isSelected: false, numbers: [1,2]},
+    {id: 8, isSelected: false, numbers: [3,4,5]},
+    {id: 9, isSelected: false, numbers: [1,2]},
+    {id: 31, isSelected: false, numbers: [7,8,9]}
+];
+
 export default initialBoard;

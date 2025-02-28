@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useSudoku from "./hooks/useSudoku";
-import initialBoard, { keyboardNumbers, randomIndex } from "./data.js";
+import initialBoard, { keyboardNumbers, randomIndex, candidates} from "./data.js";
 import Keyboard from "./Keyboard";
 import Box from "./Box.jsx";
 import { Fragment } from "react";
@@ -12,14 +12,17 @@ export default function Board() {
     const [showSubscripts, setShowSubscripts] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState(getInitialSelection);
     const [previousNumber, setPreviousNumber] = useState(0);
+    const [candidateValues, setCandidateValues] = useState(candidates);
     const { handleKeyup, handleMouseup, conflictedEntries, isNormalButton } = useSudoku(
-        board,
-        setBoard,
-        selectedEntry,
-        setSelectedEntry,
-        setKeyboardCount,
-        previousNumber,
-        setPreviousNumber
+                board,
+                setBoard,
+                selectedEntry,
+                setSelectedEntry,
+                setKeyboardCount,
+                previousNumber,
+                setPreviousNumber,
+                candidateValues,
+                setCandidateValues
     );
 
     //console.log("Board Component rendering", keyboardCount, board, previousNumber);
