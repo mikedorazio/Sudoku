@@ -11,21 +11,6 @@
     display: inline-block;
 }
 
-.normal-keyboard,
-.candidate-keyboard {
-    float: left;
-    display: grid;
-    padding-left: 35px;
-    grid-template-columns: repeat(3, 70px);
-    row-gap: 10px;
-    column-gap: 10px;
-    /* background-color: #f8cd05; */
-}
-
-.candidate-keyboard {
-    display: none;
-}
-
 .sudoku-board {
     float: left;
     width: 690px;
@@ -74,17 +59,7 @@ div.spacer {
     height: 5px;
 }
 
-.delete-button {
-    width: 100%;
-    height: 60px;
-    margin-top: 5px;
-    font-size: 2em;
-    grid-column: span 3;
-    background-color: var(--button-color);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+
 
 .entry-subscript {
     font-size: 12px;
@@ -101,7 +76,7 @@ div.spacer {
     left: 50px;
 }
 
-div[display="normal"],
+/* div[display="normal"],
 div[display="candidate"] {
     width: var(--cell-width);
     height: var(--cell-width);
@@ -112,6 +87,21 @@ div[display="candidate"] {
     align-items: center;
     display: flex;
     cursor: pointer;
+} */
+
+.normal-keyboard,
+.candidate-keyboard {
+    float: left;
+    display: grid;
+    padding-left: 35px;
+    grid-template-columns: repeat(3, 70px);
+    row-gap: 10px;
+    column-gap: 10px;
+    /* background-color: #f8cd05; */
+}
+
+.candidate-keyboard {
+    display: none;
 }
 
 .keyboard-header {
@@ -128,6 +118,7 @@ div[display="candidate"] {
     /* background: blueviolet; */ 
 }
 
+/* buttons at the top of the keyboard */
 .normal-button,
 .candidate-button {
     width: 120px;
@@ -136,7 +127,6 @@ div[display="candidate"] {
     display: inline;
     font-size: 14px;
 }
-
 .normal-button {
     background: black;
     color: white;
@@ -146,25 +136,40 @@ div[display="candidate"] {
     color: black;
 }
 
-div[number] {
+/* numbers in the keyboard, both normal and candidate */
+div[normal-number],
+div[candidate-number] {
     width: var(--cell-width);
     height: var(--cell-width);
-    position: relative;
     background-color: var(--button-color);
     border: 1px solid black;
     cursor: pointer;
+}
+/* normal numbers in the keyboard */
+div[normal-number] {
+    align-items: center;
+    line-height: 70px;
+}
+div[candidate-number] {
+    position: relative;
+}
+div[normal-number] > span {
+    font-size: 28px;
+    font-weight: 600;;
+    pointer-events: none;
+}
+/* candidate numbers in the keyboard */
+div[candidate-number] > span {
+    position: absolute;
+    pointer-events: none;
+    width: 12px;
+    height: 12px;
+    font-size: 16px;
 }
 div[pointer="none"] {
     pointer-events: none;
     opacity: .5;
     cursor: normal;
-}
-
-[class*="button-"][display="candidate"] {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    font-size: 18px;
 }
 .button-1 {
     top: 10px;
@@ -201,6 +206,18 @@ div[pointer="none"] {
 .button-9 {
     top: 50px;
     left: 50px;
+}
+
+.delete-button {
+    width: 100%;
+    height: 60px;
+    margin-top: 5px;
+    font-size: 2em;
+    grid-column: span 3;
+    background-color: var(--button-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 @keyframes fade-in {

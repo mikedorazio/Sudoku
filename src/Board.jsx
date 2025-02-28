@@ -22,7 +22,7 @@ export default function Board() {
         setPreviousNumber
     );
 
-    console.log("Board Component rendering", keyboardCount, board, previousNumber);
+    //console.log("Board Component rendering", keyboardCount, board, previousNumber);
 
     function getInitialSelection() {
         const firstZero = initialBoard.findIndex((element) => element === 0);

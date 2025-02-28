@@ -11,10 +11,10 @@ export default function Keyboard( {keyboardCount, isNormalButton} ) {
                     let styleText = keyboardCount[index] == 9 ? "none" : "auto";
                     //let buttonType = isNormalButton ? "normal" : "candidate";
                         return (
-                            <div key={num} pointer={styleText} number={num}>
-                                <div key={num} className={`button-${index+1}`} display="normal" >
-                                    {num}
-                                </div>
+                            <div key={num} pointer={styleText} normal-number={num}>
+                                {/* <div key={num} className={`button-${index+1}`} display="normal" > */}
+                                    <span className={`button-${index+1}`}> {num} </span>
+                                {/* </div> */}
                             </div>
                         );
                 })
@@ -26,10 +26,10 @@ export default function Keyboard( {keyboardCount, isNormalButton} ) {
                     let styleText = keyboardCount[index] == 9 ? "none" : "auto";
                     //let buttonType = isNormalButton ? "normal" : "candidate";
                         return (
-                            <div key={num} pointer={styleText} number={num}>
-                                <div key={num} className={`button-${index+1}`} display="candidate" >
-                                    {num}
-                                </div>
+                            <div key={num} pointer={styleText} candidate-number={num}>
+                                {/* <div key={num} className={`button-${index+1}`} display="candidate" > */}
+                                    <span className={`button-${index+1}`}>{num}</span>
+                                {/* </div> */}
                             </div>
                         );
                 })

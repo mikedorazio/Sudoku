@@ -9,7 +9,7 @@ export default function Box({chunk, originalValues, chunkIndex, selectedEntry, c
             {chunk.map((value, index) => (
                 <>
                 <Cell
-                    key={index}
+                    key={chunkIndex}
                     value={value}
                     originalValue={originalValues[chunkIndex*3+index]}
                     entryIndex={chunkIndex*3 + index}
@@ -18,7 +18,7 @@ export default function Box({chunk, originalValues, chunkIndex, selectedEntry, c
                     showSubscripts={showSubscripts}
                 />
                 <Candidate
-                    key={index+99}
+                    key={chunkIndex*3 + index}
                     value={value}
                     entryIndex={chunkIndex*3 + index}
                     selectedEntry={selectedEntry}
