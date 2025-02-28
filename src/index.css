@@ -11,14 +11,19 @@
     display: inline-block;
 }
 
-.keyboard {
+.normal-keyboard,
+.candidate-keyboard {
     float: left;
     display: grid;
-    padding-left: 40px;
+    padding-left: 35px;
     grid-template-columns: repeat(3, 70px);
     row-gap: 10px;
     column-gap: 10px;
     /* background-color: #f8cd05; */
+}
+
+.candidate-keyboard {
+    display: none;
 }
 
 .sudoku-board {
@@ -70,7 +75,7 @@ div.spacer {
 }
 
 .delete-button {
-    width: 95%;
+    width: 100%;
     height: 60px;
     margin-top: 5px;
     font-size: 2em;
@@ -96,9 +101,10 @@ div.spacer {
     left: 50px;
 }
 
-div[number] {
-    width: 60px;
-    height: 60px;
+div[display="normal"],
+div[display="candidate"] {
+    width: var(--cell-width);
+    height: var(--cell-width);
     font-size: 28px;
     font-weight: 600;;
     background-color: var(--button-color);
@@ -108,20 +114,7 @@ div[number] {
     cursor: pointer;
 }
 
-div[pointer="none"] {
-    pointer-events: none;
-    opacity: .5;
-    cursor: normal;
-}
-
-.candidate-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    background-color: bisque;
-    line-height: 22px;
-}
-
-.a {
+.keyboard-header {
     width: 300px;
     /* height: 70px; */
     grid-template-columns: 1fr 1fr;
@@ -151,6 +144,63 @@ div[pointer="none"] {
 .candidate-button {
     background: white;
     color: black;
+}
+
+div[number] {
+    width: var(--cell-width);
+    height: var(--cell-width);
+    position: relative;
+    background-color: var(--button-color);
+    border: 1px solid black;
+    cursor: pointer;
+}
+div[pointer="none"] {
+    pointer-events: none;
+    opacity: .5;
+    cursor: normal;
+}
+
+[class*="button-"][display="candidate"] {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    font-size: 18px;
+}
+.button-1 {
+    top: 10px;
+    left: 10px;
+}
+.button-2 {
+    top: 10px;
+    left: 30px;
+}
+.button-3 {
+    top: 10px;
+    left: 50px;
+}
+.button-4 {
+    top: 30px;
+    left: 10px;
+}
+.button-5 {
+    top: 30px;
+    left: 30px;
+}
+.button-6 {
+    top: 30px;
+    left: 50px;
+}
+.button-7 {
+    top: 50px;
+    left: 10px;
+}
+.button-8 {
+    top: 50px;
+    left: 30px;
+}
+.button-9 {
+    top: 50px;
+    left: 50px;
 }
 
 @keyframes fade-in {

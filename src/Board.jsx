@@ -95,12 +95,12 @@ export default function Board() {
                 </div>
 
                 <div className="buttons-keyboard-container">
-                    <div className="a">
+                    <div className="keyboard-header">
                         <button className="normal-button" id="normal-button">Normal</button>
                         <button className="candidate-button" id="candidate-button">Candidate</button>
                     </div>
                     <div className="keyboard">
-                        <Keyboard keyboardCount={keyboardCount} />
+                        <Keyboard keyboardCount={keyboardCount} isNormalButton={isNormalButton} />
                         <label htmlFor="input-sub">
                             <input
                                 id="input-sub"

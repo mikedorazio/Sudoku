@@ -159,7 +159,18 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         normalButton.style.color = isNormalButton ? "white" : "black";
         candidateButton.style.background = isNormalButton ? "white" : "black";
         candidateButton.style.color = isNormalButton ? "black" : "white";
-
+        
+        const normalKeyboardElement = document.getElementById("normal-keyboard");
+        const candidateKeyboardElement = document.getElementById("candidate-keyboard");
+        console.log("nk", normalKeyboardElement, "ck", candidateKeyboardElement);
+        if (isNormalButton) {
+            normalKeyboardElement.setAttribute("style", "display: grid")
+            candidateKeyboardElement.setAttribute("style", "display: none");
+        }
+        else {
+            normalKeyboardElement.setAttribute("style", "display: none")
+            candidateKeyboardElement.setAttribute("style", "display: grid");
+        }
         isNormalButton ? updateNormalButtonKeys() : updateCandidateButtonKeys();
 
         setIsNormalButton(isNormalButton);
@@ -184,11 +195,12 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
     // 3. Mouse was clicked in the Keyboard area on the Normal or Candidate button
     // 4. Mouse was clicked outside of both Board and Keyboard (ignore)
     function handleMouseup(event) {
-        console.log("mouseUp", event);
+        console.log("mouseUp", event.target, event);
         const selectedElement = event.target;
         //Show Subscripts label or input field was selected...just return
         if (selectedElement.tagName == "LABEL" || selectedElement.tagName == "INPUT") return;
         const boardSelected = selectedElement.classList.contains("cell");
+
         // 1. Board area was clicked.  Was an original number hit??
         if (boardSelected) {
             console.log("mouseup.tagName", selectedElement.tagName);
@@ -202,21 +214,31 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             setSelectedEntry(selectedCell);
             return;
         }
-        // 2. Mouse was clicked in the Keyboard area. Just forward to handleKeyup with the number
-        let buttonId = event.target.getAttribute("number");
-        //console.log("buttonId", buttonId);
+        // 2. Check the delete button
+        let buttonId = event.target.className;
+        console.log("buttonId", buttonId);
         //console.log("event.target.textContent", event.target.textContent);
-        if (buttonId) {
-            if (buttonId === "X") {
+        if (buttonId === "delete-button") {
                 updateNormalEntry(0);
                 return;
-            }
-            //console.log("Button with number hit...sending to handleKeyup");
-            setPreviousNumber(+buttonId)
-            updateNormalEntry(+buttonId);
+        }
+        // 3. Check the number keypad
+        if (buttonId.includes("button-")) {
+            const number = buttonId[buttonId.length - 1];
+            console.log("Button with number hit...sending to handleKeyup", number);
+            setPreviousNumber(+number)
+            updateNormalEntry(+number);
             return;
         }
-        // 3. Either the Normal or Candidate button was pressed
+       
+        // 4. Handle a Candidate button click
+        const isCandidate = selectedElement.hasAttribute("number");
+        console.log("selectedCell", selectedElement, "isCandidate", isCandidate);
+        if (isCandidate) {
+
+        }
+
+        // 5. Either the Normal or Candidate button was pressed
         if (selectedElement.tagName == "BUTTON") {
             const isNormalButton = selectedElement.classList.contains("normal-button");
             const isCandidateButton = selectedElement.classList.contains("candidate-button");
