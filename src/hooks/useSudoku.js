@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber,
-                            candidateValues, setCandidateValues)
+export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, 
+                            setPreviousNumber, candidateValues, setCandidateValues)
  {
     const [conflictedEntries, setConflictedEntries] = useState([]);
     const [isNormalButton, setIsNormalButton] = useState(true);
@@ -117,6 +117,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         return boardCountArray.length;
     }
     function updateNormalEntry(key) {
+        showNormalEntryCell();
         let prevConflicts = new Set(conflictedEntries);
         let newConflicts = new Set();
         let completeSetOfConflicts = new Set();
@@ -158,6 +159,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         const normalKeyboardElement = document.getElementById("normal-keyboard");
         const candidateKeyboardElement = document.getElementById("candidate-keyboard");
         console.log("nk", normalKeyboardElement, "ck", candidateKeyboardElement);
+        // TOFIX: just use a state variable and let the component handle the display of each of these
         if (isNormalButton) {
             normalKeyboardElement.setAttribute("style", "display: grid")
             candidateKeyboardElement.setAttribute("style", "display: none");
@@ -189,6 +191,22 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
                     console.log("entry does not have ", number);
                     return {...entry, selected: true, numbers: [...entry.numbers, number]}
                 }
+            }
+            else {
+                return entry;
+            }
+        });
+        setCandidateValues(newEntries);
+    }
+
+    function showNormalEntryCell() {
+        const index = getSelectedIndex();
+        console.log("showNormalEntryCell.index", index);
+
+        const newEntries = candidateValues.map((entry) => {
+            if (entry.id == index) {
+                console.log("showNormalEntryCell.entry found selectedCell ", index);
+                return {...entry, selected: false}
             }
             else {
                 return entry;
@@ -229,7 +247,8 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             const isTileStart = selectedElement.classList.contains("tile-start");
             if (isTileStart) return;
             const selectedCell = event.target.getAttribute("rowcol");
-            const numberValue = event.target.getAttribute("numbervalue");
+            let numberValue = event.target.getAttribute("numbervalue");
+if (numberValue == null || numberValue == undefined) numberValue = 0;
             setPreviousNumber(numberValue);
             console.log("handleMouseup.numberValue", numberValue);
             setSelectedEntry(selectedCell);

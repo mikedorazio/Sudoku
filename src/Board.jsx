@@ -8,6 +8,7 @@ import { Fragment } from "react";
 export default function Board() {
     const [board, setBoard] = useState([...initialBoard]);
     const [chunks, setChunks] = useState(initializeChunks);
+    const [candidateChunks, setCandidateChunks] = useState(initializeCandidateChunks);
     const [keyboardCount, setKeyboardCount] = useState([...keyboardNumbers]);
     const [showSubscripts, setShowSubscripts] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState(getInitialSelection);
@@ -25,7 +26,7 @@ export default function Board() {
                 setCandidateValues
     );
 
-    //console.log("Board Component rendering", keyboardCount, board, previousNumber);
+    //console.log("Board Component rendering", candidateValues);
 
     function getInitialSelection() {
         const firstZero = initialBoard.findIndex((element) => element === 0);
@@ -38,8 +39,14 @@ export default function Board() {
     function initializeChunks() {
         let chunks = [];
         for (let i = 0; i < initialBoard.length; i += 3) {
-            //console.log("initializeChunks.board", board);
             chunks.push(initialBoard.slice(i, i + 3));
+        }
+        return chunks;
+    }
+    function initializeCandidateChunks() {
+        let chunks = [];
+        for (let i = 0; i < candidates.length; i += 3) {
+            chunks.push(candidates.slice(i, i + 3));
         }
         return chunks;
     }
@@ -49,14 +56,17 @@ export default function Board() {
     }
 
     useEffect(() => {
-        //console.log("Board useEffect is rendering", board);
+        //console.log("Board useEffect is rendering", board, candidateValues);
         let myChunks = [];
+        let canChunks = []
         for (let i = 0; i < initialBoard.length; i += 3) {
             myChunks.push(board.slice(i, i + 3));
+            canChunks.push(candidateValues.slice(i, i + 3));
         }
         //console.log("Board.useEffect setting chunks", myChunks);
         setChunks(myChunks);
-    }, [board]);
+        setCandidateChunks(canChunks);
+    }, [board, candidateValues]);
 
     useEffect(() => {
         window.addEventListener("keyup", handleKeyup);
@@ -79,6 +89,7 @@ export default function Board() {
                                 <Box
                                     key={index}
                                     chunk={chunk}
+                                    canChunk={candidateChunks[index]}
                                     originalValues={initialBoard}
                                     chunkIndex={index}
                                     selectedEntry={selectedEntry}

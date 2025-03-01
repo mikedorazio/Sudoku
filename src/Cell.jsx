@@ -1,4 +1,4 @@
-export default function Cell({ value, originalValue, entryIndex, selectedEntry, conflict, showSubscripts }) {
+export default function Cell({ value, canValue, originalValue, entryIndex, selectedEntry, conflict, showSubscripts }) {
 
     // only original values should have tile-start attribute
     let className = (value == originalValue && value != 0) ? "cell tile-start" : "cell";
@@ -16,12 +16,13 @@ export default function Cell({ value, originalValue, entryIndex, selectedEntry, 
         className = className + " conflict";
         //className = className + " subscript-circle"
     }
+    let displayValue = canValue.selected ? "hide" : "show";
 
-    //console.log("Cell.showSubscripts", showSubscripts);
+    //console.log("Cell.canValue", canValue);
     //console.log("Cell.entryIndex", entryIndex, "row", row, "column", column, "rowColumn", rowColumn, "origValue", originalValue);
 
     return (
-        <div key={entryIndex} className={className} rowcol={rowColumn} numbervalue={value}> {value != 0 ? value : " "} 
+        <div key={entryIndex} className={className} rowcol={rowColumn} displayvalue={displayValue}  numbervalue={value}> {value != 0 ? value : " "} 
             {showSubscripts
             ?
             <sub className="entry-subscript">{entryIndex}</sub>
