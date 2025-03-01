@@ -170,21 +170,31 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         setIsNormalButton(isNormalButton);
     }
 
-    // Handle the selection of a candidate number. If the array of candidate values does not contain the index of the
-    // currently selected cell, add it to the array, otherwise just update the array at that index.
+    // Handle the selection of a candidate number. Since the array of candidates has to match the initialBoard array
+    // that will be sliced() into chunks, it is just easier to have the candidateValues as the full set (0 to 80)
     function handleCandidateNumber(number) {
         const index = getSelectedIndex();
-        console.log("handleCandidateNumber.index, candidateValues", index, candidateValues);
-        const candidateEntry = candidateValues.find((entry) => entry.id == index);
-        // the candidate entry does not exist...add it and return
-        if (candidateEntry == undefined) {
-            const newEntry = {id: index, isSelected: true, numbers: [number]};
-            console.log("setting new entry", newEntry);
-            setCandidateValues([...candidateValues, newEntry]);
-        }
-        // the candidate entry exists, add the number or take it way if it already exists
-        const candidateNumbers = candidateEntry.numbers;
-        console.log("candidate entry has numbers ", candidateNumbers);
+        console.log("handleCandidateNumber.index", index, "candidateValues", candidateValues);
+        const newEntries = candidateValues.map((entry) => {
+            if (entry.id == index) {
+                console.log("entry.id == index", entry.id, index, entry.numbers);
+                if (entry.numbers.includes(number)) {
+                    console.log("entry already included ", number);
+                    // we need to remove it...
+                    const newNumbers = entry.numbers.filter(item => item != number);
+                    return {...entry, selected: true, numbers: newNumbers}
+                }
+                else {
+                    // and the new number to the list
+                    console.log("entry does not have ", number);
+                    return {...entry, selected: true, numbers: [...entry.numbers, number]}
+                }
+            }
+            else {
+                return entry;
+            }
+        });
+        setCandidateValues(newEntries);
     }
 
     // handle keypad entry
@@ -251,7 +261,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         if (isCandidate) {
             const number = selectedElement.getAttribute("candidate-number");
             console.log("mouseUp candidate-number hit", number);
-            handleCandidateNumber(number);
+            handleCandidateNumber(parseInt(number));
             return;
         }
 
