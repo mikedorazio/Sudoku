@@ -8,7 +8,7 @@ export default function Cell({ value, canValue, originalValue, entryIndex, selec
     let rowColumn = row + "," + column;
 
     if (rowColumn === selectedEntry) {
-        console.log("updating to add selected");
+        //console.log("updating to add selected");
         className = className + " selected";
     }
 

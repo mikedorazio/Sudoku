@@ -4,6 +4,7 @@ import initialBoard, { keyboardNumbers, randomIndex, candidates} from "./data.js
 import Keyboard from "./Keyboard";
 import Box from "./Box.jsx";
 import { Fragment } from "react";
+import ReactConfetti from "react-confetti";
 
 export default function Board() {
     const [board, setBoard] = useState([...initialBoard]);
@@ -14,7 +15,7 @@ export default function Board() {
     const [selectedEntry, setSelectedEntry] = useState(getInitialSelection);
     const [previousNumber, setPreviousNumber] = useState(0);
     const [candidateValues, setCandidateValues] = useState(candidates);
-    const { handleKeyup, handleMouseup, conflictedEntries, isNormalButton } = useSudoku(
+    const { handleKeyup, handleMouseup, conflictedEntries, isNormalButton, isGameOver } = useSudoku(
                 board,
                 setBoard,
                 selectedEntry,
@@ -26,7 +27,7 @@ export default function Board() {
                 setCandidateValues
     );
 
-    //console.log("Board Component rendering", candidateValues);
+    //console.log("Board Component rendering", isGameOver);
 
     function getInitialSelection() {
         const firstZero = initialBoard.findIndex((element) => element === 0);
@@ -72,6 +73,10 @@ export default function Board() {
         window.addEventListener("keyup", handleKeyup);
         window.addEventListener("mouseup", handleMouseup);
 
+        if (isGameOver) {
+            window.removeEventListener("keyup", handleKeyup);
+            window.removeEventListener("mouseup", handleMouseup);
+        }
         return () => {
             window.removeEventListener("keyup", handleKeyup);
             window.removeEventListener("mouseup", handleMouseup);
@@ -80,6 +85,7 @@ export default function Board() {
 
     return (
         <>
+            {isGameOver && <ReactConfetti />}
             <h1>Apostle John's Sudoku Game (# {randomIndex + 1}) </h1>
             <div className="board-keyboard-container">
                 <div className="sudoku-board" id="sudoku-board">

@@ -5,6 +5,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
  {
     const [conflictedEntries, setConflictedEntries] = useState([]);
     const [isNormalButton, setIsNormalButton] = useState(true);
+    const [isGameOver, setIsGameOver] = useState(false);
     let currentNumber = 0;
 
     function getRowFromIndex(index) {
@@ -140,6 +141,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         //console.log("updateSelectedEntries. grid has the folling count of numbers", getGridCount() + 1);
         if (getGridCount() + 1 == 81 && completeSetOfConflicts.size == 0) {
             console.log("updateNormalEntry.GAME OVER....Congratulations.......");
+            setIsGameOver(true);
         }
         // calculate keyboard count
         calculateKeyboardCount(key);
@@ -234,7 +236,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
     // 3. Mouse was clicked in the Keyboard area on the Normal or Candidate button
     // 4. Mouse was clicked outside of both Board and Keyboard (ignore)
     function handleMouseup(event) {
-        console.log("mouseUp", event.target, event);
+        //console.log("mouseUp", event.target, event);
         const selectedElement = event.target;
         //Show Subscripts label or input field was selected...just return
         if (selectedElement.tagName == "LABEL" || selectedElement.tagName == "INPUT") return;
@@ -242,15 +244,15 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
 
         // 1. Board area was clicked.  Was an original number hit??
         if (boardSelected) {
-            console.log("mouseup.boardSelected", selectedElement.tagName);
+            //console.log("mouseup.boardSelected", selectedElement.tagName);
             const tagName = selectedElement.tagName;
             const isTileStart = selectedElement.classList.contains("tile-start");
             if (isTileStart) return;
             const selectedCell = event.target.getAttribute("rowcol");
             let numberValue = event.target.getAttribute("numbervalue");
-if (numberValue == null || numberValue == undefined) numberValue = 0;
+            if (numberValue == null || numberValue == undefined) numberValue = 0;
             setPreviousNumber(numberValue);
-            console.log("handleMouseup.numberValue", numberValue);
+            //console.log("handleMouseup.numberValue", numberValue);
             setSelectedEntry(selectedCell);
             return;
         }
@@ -320,5 +322,5 @@ if (numberValue == null || numberValue == undefined) numberValue = 0;
         setKeyboardCount(numberBoard);
     }
 
-    return { handleKeyup, handleMouseup, conflictedEntries, isNormalButton };
+    return { handleKeyup, handleMouseup, conflictedEntries, isNormalButton, isGameOver };
 }

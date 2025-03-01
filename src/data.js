@@ -43,7 +43,7 @@ const boardData =
 ]
 // Mikey did the second game in the list on 11-17-14
 
-console.log("in boardData");
+//console.log("in boardData");
 let boardSize = boardData.length;
 export let randomIndex = Math.floor(Math.random() * boardSize);
 let initialBoard = boardData[randomIndex];
