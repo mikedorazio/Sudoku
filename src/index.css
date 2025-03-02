@@ -108,23 +108,35 @@ div.spacer {
 }
 
 .keyboard-header {
-    width: 300px;
+    width: 245px;
     /* height: 70px; */
     grid-template-columns: 1fr 1fr;
     display: flex;
     padding-bottom: 10px;
-    padding-left: 5px;
+    padding-left: 30px;
 }
 .buttons-keyboard-container {
     float: left;
     width: 700px;
-    /* background: blueviolet; */ 
+    height: 480px;
+    /* background: blueviolet;  */
+}
+
+.keyboard {
+    /* background-color: cadetblue; */
+    /* height: 400px; */
+    display: grid;
+}
+.subscripts-container {
+    justify-self: left;
+    padding-top: 15px;
+    padding-left: 20px;
 }
 
 /* buttons at the top of the keyboard */
 .normal-button,
 .candidate-button {
-    width: 120px;
+    width: 115px;
     height: 35px;
     margin: 0 auto;
     display: inline;
@@ -133,6 +145,7 @@ div.spacer {
 .normal-button {
     background: black;
     color: white;
+    
 }
 .candidate-button {
     background: white;
@@ -142,10 +155,10 @@ div.spacer {
 /* numbers in the keyboard, both normal and candidate */
 div[normal-number],
 div[candidate-number] {
-    width: var(--cell-width);
-    height: var(--cell-width);
+    width: 70px;
+    height: 70px;
     background-color: var(--button-color);
-    border: 1px solid black;
+    border: 1px solid #979797;
     cursor: pointer;
 }
 /* normal numbers in the keyboard */
@@ -175,27 +188,27 @@ div[pointer="none"] {
     cursor: normal;
 }
 .button-1 {
-    top: 10px;
+    top: 8px;
     left: 10px;
 }
 .button-2 {
-    top: 10px;
+    top: 8px;
     left: 30px;
 }
 .button-3 {
-    top: 10px;
+    top: 8px;
     left: 50px;
 }
 .button-4 {
-    top: 30px;
+    top: 28px;
     left: 10px;
 }
 .button-5 {
-    top: 30px;
+    top: 28px;
     left: 30px;
 }
 .button-6 {
-    top: 30px;
+    top: 28px;
     left: 50px;
 }
 .button-7 {
@@ -212,13 +225,13 @@ div[pointer="none"] {
 }
 
 .delete-button {
-    width: 100%;
-    height: 60px;
+    width: 104%;
+    height: 50px;
     margin-top: 5px;
     font-size: 2em;
     grid-column: span 3;
     background-color: var(--button-color);
-    border: none;
+    border: 1px solid #979797;
     border-radius: 5px;
     cursor: pointer;
 }

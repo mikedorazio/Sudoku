@@ -120,17 +120,19 @@ export default function Board() {
                         <button className="candidate-button" id="candidate-button">Candidate</button>
                     </div>
                     <div className="keyboard">
-                        <Keyboard keyboardCount={keyboardCount} isNormalButton={isNormalButton} />
-                        <label htmlFor="input-sub">
-                            <input
-                                id="input-sub"
-                                type="checkbox"
-                                name="showSubscripts"
-                                value={showSubscripts}
-                                onChange={handleSubscripts}
-                            />
-                            Show Subscripts
-                        </label>
+                        <Keyboard keyboardCount={keyboardCount} />
+                        <div className="subscripts-container">
+                            <label htmlFor="input-sub">
+                                <input
+                                    id="input-sub"
+                                    type="checkbox"
+                                    name="showSubscripts"
+                                    value={showSubscripts}
+                                    onChange={handleSubscripts}
+                                />
+                                Show Subscripts
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>

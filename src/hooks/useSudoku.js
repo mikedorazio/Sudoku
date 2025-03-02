@@ -35,7 +35,6 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         const rowAndCol = row + "," + col;
         const element = document.querySelector(`[rowcol="${rowAndCol}"]`);
         const value = element.getAttribute("numbervalue");
-        //console.log("getValueFromIndex.index", index, "element", element, "val", value);
         return value;
     }
 
@@ -111,6 +110,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         //console.log("cgfc.conflictsSet.end", conflictsSet, "currentValue", currentValue);
     }
 
+    // determine the number of entries that have numbers in them
     function getGridCount() {
         let boardCountArray = board.filter(function(element) {
             return element !== 0;
