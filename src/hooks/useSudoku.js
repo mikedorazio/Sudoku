@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, 
-                            setPreviousNumber, candidateValues, setCandidateValues)
+                            setPreviousNumber, candidateValues, setCandidateValues, autoCandidateValues, setAutoCandidateValues)
  {
     const [conflictedEntries, setConflictedEntries] = useState([]);
     const [isNormalButton, setIsNormalButton] = useState(true);
@@ -58,17 +58,18 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         return subgridRow1 === subgridRow2 && subgridCol1 === subgridCol2;
     }
 
-    // check the given cell against all the values in its 3x3 grid and row/column
-    function checkGridForConflicts(cellIndex, conflictsSet) {
+    // check the given cell value at given index against all the values in its 3x3 grid and row/column
+    function checkGridForConflicts(value, cellIndex, conflictsSet) {
         //console.log("cgfc called with", cellIndex, conflictsSet, "selectedIndex");
         // TOFIX: if the currentRow is 3 or more rows away from the one we are checking it can never be in the same 3x3 grid
         const currentBoard = [...board];
         // update currentBoard with the current selection since state is old....
-        currentBoard[getSelectedIndex()] = currentNumber;
+        currentBoard[cellIndex] = value;
         //console.log("cgfc.currentNumber", currentNumber);
         // if currentNumber is 0 can I return?
         let currentRow = getRowFromIndex(cellIndex);
         let currentColumn = getColumnFromIndex(cellIndex);
+        // TOFIX : dont need to do this...just assign it value
         let currentValue = currentBoard[cellIndex];
         let hasConflicts = false;
         for (let index = 0; index < 81; index++) {
@@ -127,13 +128,13 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         setNewBoardEntry(key);
         // first check the current entry for conflicts
         //console.log("updateNormalEntry.currentNumber", currentNumber);
-        checkGridForConflicts(getSelectedIndex(), newConflicts);
+        checkGridForConflicts(key, getSelectedIndex(), newConflicts);
         completeSetOfConflicts = new Set([...newConflicts]);
         // now check old conflicts and see if they are still conflicts
         prevConflicts.forEach((entry) => {
             newConflicts = new Set();
             //console.log("updateNormalEntry.checking conflictedEntry", entry, " and its value is ", getValueFromIndex(entry));
-            checkGridForConflicts(entry, newConflicts);
+            checkGridForConflicts(key, entry, newConflicts);
             completeSetOfConflicts = new Set([...completeSetOfConflicts, ...newConflicts]);
         });
         //console.log("updateNormalEntry.prevConflicts - End", prevConflicts);
@@ -217,6 +218,43 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         setCandidateValues(newEntries);
     }
 
+    function getAutoCandidateValues() {
+        console.log("getAutoCandidateValues().entered");
+        let candidates = [];
+        let conflicts = {};
+        for (let i = 0; i < 81; i++) {
+            let candidateObject = {};
+            let autoCandidates = [];
+            //console.log("getAutoCandidateValues", board[i]);
+            if (board[i] != 0) {
+                // skip entry since a normal number is already there
+                console.log("getAutoCandidateValues setting false with", board[i]);
+                candidateObject = {id: i, selected: false, numbers: []};
+            }
+            else {
+                //console.log("getAutoCandidateValues setting true with", board[i]);
+                for (let j = 1; j <= 9; j++) {
+                    conflicts = new Set();
+                    checkGridForConflicts(j, i, conflicts);
+                    console.log("getAutoCandidateValues().conflicts for ", j, i, conflicts);
+                    if (conflicts.size > 0) {
+                        //autoCandidates.push(j);
+                        //candidateObject = {id: i, selected: true, numbers: [...j]};
+                    }
+                    else {
+                        autoCandidates.push(j);
+                        //candidateObject = {id: i, selected: true, numbers: []}; 
+                    }
+                }
+                candidateObject = {id: i, selected: true, numbers: autoCandidates};
+            }
+            console.log("getAutoCandidates pushing", candidateObject);
+            candidates.push(candidateObject);
+        }
+        setAutoCandidateValues(candidates);
+        console.log("getAutoCandidates.board", board, candidates);
+    }
+
     // handle keypad entry
     function handleKeyup({ key }) {
         //key = +key;
@@ -236,15 +274,21 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
     // 3. Mouse was clicked in the Keyboard area on the Normal or Candidate button
     // 4. Mouse was clicked outside of both Board and Keyboard (ignore)
     function handleMouseup(event) {
-        //console.log("mouseUp", event.target, event);
+        console.log("handleMouseup.mouseUp", event.target, event);
         const selectedElement = event.target;
         //Show Subscripts label or input field was selected...just return
-        if (selectedElement.tagName == "LABEL" || selectedElement.tagName == "INPUT") return;
+        if (selectedElement.tagName == "LABEL" || selectedElement.tagName == "INPUT") {
+            if (selectedElement.hasAttribute("ac")) {
+                console.log("handleMouseup.handle auto candidate mode");
+                getAutoCandidateValues();
+            }
+            return;
+        }
         const boardSelected = selectedElement.classList.contains("cell");
 
         // 1. Board area was clicked.  Was an original number hit??
         if (boardSelected) {
-            //console.log("mouseup.boardSelected", selectedElement.tagName);
+            console.log("handleMouseup.boardSelected", selectedElement.tagName);
             const tagName = selectedElement.tagName;
             const isTileStart = selectedElement.classList.contains("tile-start");
             if (isTileStart) return;
@@ -258,9 +302,10 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         }
         // 2. Check the delete button
         let buttonId = event.target.className;
-        console.log("buttonId", buttonId);
+        console.log("handleMouseup.buttonId", buttonId);
         //console.log("event.target.textContent", event.target.textContent);
         if (buttonId === "delete-button") {
+            console.log("handleMouseup.delete-button clicked");
             console.log("mouseUp.delete-button");
                 updateNormalEntry(0);
                 return;
@@ -268,7 +313,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         // 3. Check the normal number keypad
         const isNormal = selectedElement.hasAttribute("normal-number");
         if (isNormal) {
-            console.log("mouseUp normal-number hit");
+            console.log("handleMouseup.mouseUp normal-number hit");
             const number = selectedElement.getAttribute("normal-number");
             console.log("mouseUp normal-numer hit...sending to handleKeyup", number);
             setPreviousNumber(+number)
@@ -278,10 +323,10 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
        
         // 4. Handle a Candidate button click
         const isCandidate = selectedElement.hasAttribute("candidate-number");
-        console.log("selectedElement", selectedElement, "isCandidate", isCandidate);
+        console.log("handleMouseup.selectedElement", selectedElement, "isCandidate", isCandidate);
         if (isCandidate) {
             const number = selectedElement.getAttribute("candidate-number");
-            console.log("mouseUp candidate-number hit", number);
+            console.log("handleMouseUp candidate-number hit", number);
             handleCandidateNumber(parseInt(number));
             return;
         }
@@ -290,7 +335,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         if (selectedElement.tagName == "BUTTON") {
             const isNormalButton = selectedElement.classList.contains("normal-button");
             const isCandidateButton = selectedElement.classList.contains("candidate-button");
-            console.log("Normal or Candiate button hit", isNormalButton, isCandidateButton);
+            console.log("handleMouseup.Normal or Candiate button hit", isNormalButton, isCandidateButton);
             handleNormalCandiateButtonClick(isNormalButton);
             return;
         }

@@ -69,18 +69,10 @@ for (let i = 0; i < 81; i++) {
     candidates.push(candidateObject);
 }
 
-// [
-//     {id: 0, isSelected: false, numbers: [1,2]},
-//     {id: 1, isSelected: false, numbers: [3,4,5]},
-//     {id: 2, isSelected: false, numbers: [5,9]},
-//     {id: 3, isSelected: false, numbers: [1,2]},
-//     {id: 4, isSelected: false, numbers: [3,4,5]},
-//     {id: 5, isSelected: false, numbers: [0]},
-//     {id: 6, isSelected: false, numbers: [3,4,5]},
-//     {id: 7, isSelected: false, numbers: [1,2]},
-//     {id: 8, isSelected: false, numbers: [3,4,5]},
-//     {id: 9, isSelected: false, numbers: [1,2]},
-//     {id: 31, isSelected: false, numbers: [7,8,9]}
-// ];
+export let autoCandidates = [];
+for (let i = 0; i < 81; i++) {
+    const candidateObject = {id: i, selected: false, numbers: []};
+    autoCandidates.push(candidateObject);
+}
 
 export default initialBoard;

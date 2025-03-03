@@ -1,4 +1,4 @@
-export default function Cell({ value, canValue, originalValue, entryIndex, selectedEntry, conflict, showSubscripts }) {
+export default function Cell({ value, canValue, autoValue, originalValue, entryIndex, selectedEntry, conflict, showSubscripts, showAutoCandidates }) {
 
     // only original values should have tile-start attribute
     let className = (value == originalValue && value != 0) ? "cell tile-start" : "cell";
@@ -16,9 +16,17 @@ export default function Cell({ value, canValue, originalValue, entryIndex, selec
         className = className + " conflict";
         //className = className + " subscript-circle"
     }
-    let displayValue = canValue.selected ? "hide" : "show";
 
-    //console.log("Cell.canValue", canValue);
+    if (entryIndex < 3) {
+        console.log("Cell.canValue", canValue.selected);
+    }
+    
+    if (entryIndex < 3) {      
+        console.log("Cell.canValue", showAutoCandidates, autoValue.selected);
+    }
+    let displayValue = canValue.selected || (showAutoCandidates && autoValue.selected) ? "hide" : "show";
+    
+   
     //console.log("Cell.entryIndex", entryIndex, "row", row, "column", column, "rowColumn", rowColumn, "origValue", originalValue);
 
     return (

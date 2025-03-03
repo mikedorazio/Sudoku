@@ -127,11 +127,6 @@ div.spacer {
     /* height: 400px; */
     display: grid;
 }
-.subscripts-container {
-    justify-self: left;
-    padding-top: 15px;
-    padding-left: 20px;
-}
 
 /* buttons at the top of the keyboard */
 .normal-button,
@@ -234,6 +229,13 @@ div[pointer="none"] {
     border: 1px solid #979797;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.subscripts-container,
+.autocandidates-container {
+    justify-self: left;
+    padding-top: 15px;
+    padding-left: 20px;
 }
 
 @keyframes fade-in {
