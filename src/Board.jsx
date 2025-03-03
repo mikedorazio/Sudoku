@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useSudoku from "./hooks/useSudoku";
-import initialBoard, { keyboardNumbers, randomIndex, candidates} from "./data.js";
+import initialBoard, { keyboardNumbers, randomIndex, candidates, autoCandidates } from "./data.js";
 import Keyboard from "./Keyboard";
 import Box from "./Box.jsx";
 import { Fragment } from "react";
@@ -10,11 +10,14 @@ export default function Board() {
     const [board, setBoard] = useState([...initialBoard]);
     const [chunks, setChunks] = useState(initializeChunks);
     const [candidateChunks, setCandidateChunks] = useState(initializeCandidateChunks);
+    const [autoCandidateChunks, setAutCandidateChunks] = useState(initializeAutoCandidateChunks);
     const [keyboardCount, setKeyboardCount] = useState([...keyboardNumbers]);
     const [showSubscripts, setShowSubscripts] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState(getInitialSelection);
     const [previousNumber, setPreviousNumber] = useState(0);
     const [candidateValues, setCandidateValues] = useState(candidates);
+    const [autoCandidateValues, setAutoCandidateValues] = useState(autoCandidates);
+    const [showAutoCandidates, setShowAutoCandidates] = useState(false);
     const { handleKeyup, handleMouseup, conflictedEntries, isNormalButton, isGameOver } = useSudoku(
                 board,
                 setBoard,
@@ -24,10 +27,12 @@ export default function Board() {
                 previousNumber,
                 setPreviousNumber,
                 candidateValues,
-                setCandidateValues
+                setCandidateValues,
+                autoCandidateValues,
+                setAutoCandidateValues,
     );
 
-    //console.log("Board Component rendering", isGameOver);
+    console.log("Board Component rendering", showAutoCandidates, autoCandidateValues);
 
     function getInitialSelection() {
         const firstZero = initialBoard.findIndex((element) => element === 0);
@@ -52,22 +57,36 @@ export default function Board() {
         return chunks;
     }
 
+    function initializeAutoCandidateChunks() {
+        let chunks = [];
+        for (let i = 0; i < autoCandidates.length; i += 3) {
+            chunks.push(autoCandidates.slice(i, i + 3));
+        }
+        return chunks;
+    }
+
     function handleSubscripts(event) {
         setShowSubscripts(event.target.checked);
+    }
+    function handleAutoCandidates(event) {
+        setShowAutoCandidates(event.target.checked);
     }
 
     useEffect(() => {
         //console.log("Board useEffect is rendering", board, candidateValues);
         let myChunks = [];
-        let canChunks = []
+        let canChunks = [];
+        let aChunks = [];
         for (let i = 0; i < initialBoard.length; i += 3) {
             myChunks.push(board.slice(i, i + 3));
             canChunks.push(candidateValues.slice(i, i + 3));
+            aChunks.push(autoCandidateValues.slice(i, i + 3));
         }
         //console.log("Board.useEffect setting chunks", myChunks);
         setChunks(myChunks);
         setCandidateChunks(canChunks);
-    }, [board, candidateValues]);
+        setAutCandidateChunks(aChunks);
+    }, [board, candidateValues, autoCandidateValues]);
 
     useEffect(() => {
         window.addEventListener("keyup", handleKeyup);
@@ -96,11 +115,13 @@ export default function Board() {
                                     key={index}
                                     chunk={chunk}
                                     canChunk={candidateChunks[index]}
+                                    autoChunk={autoCandidateChunks[index]}
                                     originalValues={initialBoard}
                                     chunkIndex={index}
                                     selectedEntry={selectedEntry}
                                     conflictedEntries={conflictedEntries}
                                     showSubscripts={showSubscripts}
+                                    showAutoCandidates={showAutoCandidates}
                                 />
                             </div>
                             {index == 8 || index == 17 ? (
@@ -131,6 +152,19 @@ export default function Board() {
                                     onChange={handleSubscripts}
                                 />
                                 Show Subscripts
+                            </label>
+                        </div>
+                        <div className="autocandidates-container">
+                            <label htmlFor="input-autocandidates" ac="true">
+                                <input
+                                    id="input-autocandidates"
+                                    type="checkbox"
+                                    ac="true"
+                                    name="showAutoCandidates"
+                                    value={showAutoCandidates}
+                                    onChange={handleAutoCandidates}
+                                />
+                                Auto Candidate Mode
                             </label>
                         </div>
                     </div>
