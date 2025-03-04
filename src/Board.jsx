@@ -32,7 +32,7 @@ export default function Board() {
                 setAutoCandidateValues,
     );
 
-    console.log("Board Component rendering", showAutoCandidates, autoCandidateValues);
+    console.log("Board Component rendering", board, "candidates", candidateValues, "autoCandidates", autoCandidateValues);
 
     function getInitialSelection() {
         const firstZero = initialBoard.findIndex((element) => element === 0);

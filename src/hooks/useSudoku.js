@@ -190,7 +190,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
                     return {...entry, selected: true, numbers: newNumbers}
                 }
                 else {
-                    // and the new number to the list
+                    // add the new number to the list
                     console.log("entry does not have ", number);
                     return {...entry, selected: true, numbers: [...entry.numbers, number]}
                 }
@@ -199,6 +199,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
                 return entry;
             }
         });
+        console.log("handleCandidateNumber.newEntries", newEntries);
         setCandidateValues(newEntries);
     }
 

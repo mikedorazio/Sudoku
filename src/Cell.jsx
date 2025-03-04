@@ -18,12 +18,9 @@ export default function Cell({ value, canValue, autoValue, originalValue, entryI
     }
 
     if (entryIndex < 3) {
-        console.log("Cell.canValue", canValue.selected);
+        console.log("Cell.canValue", canValue.selected, "showAuto", autoValue.selected);
     }
     
-    if (entryIndex < 3) {      
-        console.log("Cell.canValue", showAutoCandidates, autoValue.selected);
-    }
     let displayValue = canValue.selected || (showAutoCandidates && autoValue.selected) ? "hide" : "show";
     
    

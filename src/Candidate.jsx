@@ -12,8 +12,9 @@ export default function Candidate({entryIndex, canValue, autoValue, showAutoCand
     }
 
     const realNumbers = [1,2,3,4,5,6,7,8,9];
+    const canOrAuto = showAutoCandidates ? autoValue : canValue;
     const candidateNumbers = realNumbers.map((number, index) => {
-        if (autoValue.numbers.includes(number)) {
+        if (canOrAuto.numbers.includes(number)) {
             return number;
         }
         else {
@@ -21,12 +22,14 @@ export default function Candidate({entryIndex, canValue, autoValue, showAutoCand
         }
     })
 
-    //console.log("Candidate.");
+    if (entryIndex < 3) {
+        console.log("Candidate.numbers" + canValue.numbers);
+    }
     return (
         <div className={className} rowcol={rowColumn} displayvalue={displayValue} entryindex={entryIndex} row="0">
             {realNumbers.map((number, index) => {
                 return <div key={index} className="cell-candidate" sub={number}>
-                         {autoValue.selected ? candidateNumbers[index] : null}
+                         {candidateNumbers[index]}
                         </div>
             })}
         </div>
