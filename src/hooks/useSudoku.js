@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-export default function useSudoku(board, setBoard, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, 
-                            setPreviousNumber, candidateValues, setCandidateValues, autoCandidateValues, setAutoCandidateValues)
+export default function useSudoku(board, setBoard, allData, setAllData, selectedEntry, setSelectedEntry, setKeyboardCount, previousNumber, setPreviousNumber)
  {
     const [conflictedEntries, setConflictedEntries] = useState([]);
     const [isNormalButton, setIsNormalButton] = useState(true);
@@ -29,20 +28,13 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
     function getSelectedIndex() {
         return getSelectedRow() * 9 + getSelectedColumn();
     }
-    function getValueFromIndex(index) {
-        const row = getRowFromIndex(index);
-        const col = getColumnFromIndex(index);
-        const rowAndCol = row + "," + col;
-        const element = document.querySelector(`[rowcol="${rowAndCol}"]`);
-        const value = element.getAttribute("numbervalue");
-        return value;
-    }
 
     function setNewBoardEntry(key) {
         let row = getSelectedRow();
         let column = getSelectedColumn();
         let boardEntry = +row * 9 + +column;
         //console.log("setNewBoardEntry", selectedEntry, "key:", key);
+        // TOFIX: can we do a shallow copy here???
         const newEntries = [...board];
         newEntries[boardEntry] = key;
         setBoard(newEntries);
@@ -59,21 +51,19 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
     }
 
     // check the given cell value at given index against all the values in its 3x3 grid and row/column
-    function checkGridForConflicts(value, cellIndex, conflictsSet) {
-        //console.log("cgfc called with", cellIndex, conflictsSet, "selectedIndex");
-        // TOFIX: if the currentRow is 3 or more rows away from the one we are checking it can never be in the same 3x3 grid
-        const currentBoard = [...board];
+    function checkGridForConflicts(cellIndex, conflictsSet) {
+        //console.log("cgfc called with cellIndex", cellIndex, "currentNumber", currentNumber);
+        const currentBoard = JSON.parse(JSON.stringify(allData));
         // update currentBoard with the current selection since state is old....
-        currentBoard[cellIndex] = value;
+        currentBoard[cellIndex].number = currentNumber;
         //console.log("cgfc.currentNumber", currentNumber);
-        // if currentNumber is 0 can I return?
         let currentRow = getRowFromIndex(cellIndex);
         let currentColumn = getColumnFromIndex(cellIndex);
-        // TOFIX : dont need to do this...just assign it value
-        let currentValue = currentBoard[cellIndex];
+        // TOFIX : dont need to do this...just assign it currentNumber
+        let currentValue = currentBoard[cellIndex].number;
         let hasConflicts = false;
         for (let index = 0; index < 81; index++) {
-            if (currentBoard[index] == 0) continue;
+            if (currentBoard[index].number == 0) continue;
             if (index == cellIndex) continue;
             let entryRow = Math.floor(index / 9);
             let entryColumn = index % 9;
@@ -81,27 +71,27 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             if (areCellsInSameSubgrid(currentRow, currentColumn, entryRow, entryColumn)) {
                 // the board entry is in same 3x3 grid...check if there is a conflict
                 //console.log("cgfc.checking index", index, "against value", currentValue);
-                if (currentBoard[index] == currentValue) {
+                if (currentBoard[index].number == currentValue) {
                     hasConflicts = true;
-                    console.log("cgfc.CONFLICT1 (grid):", index, "with number", currentValue);
+                    //console.log("cgfc.CONFLICT1 (grid):", index, "with number", currentValue);
                     conflictsSet.add(index);
                 }
             }
             // check if the board entry is in the same row
-            if (entryRow == currentRow && (currentBoard[index] == currentValue)) {
+            if (entryRow == currentRow && (currentBoard[index].number == currentValue)) {
                 hasConflicts = true;
-                console.log("cgfc.CONFLICT2: (row)", index, "with number", currentValue);
+                //console.log("cgfc.CONFLICT2: (row)", index, "with number", currentValue);
                 conflictsSet.add(index);
             }
             // check if the board entry is in the same column
-            if (entryColumn == currentColumn && (currentBoard[index] == currentValue)) {
+            if (entryColumn == currentColumn && (currentBoard[index].number == currentValue)) {
                 hasConflicts = true;
-                console.log("cgfc.CONFLICT3: (column)", index, "with number", currentValue);
+                //console.log("cgfc.CONFLICT3: (column)", index, "with number", currentValue);
                 conflictsSet.add(index);
             }
         };
         if (hasConflicts == false) {
-            console.log("cgfc.DELETING: cellIndex had no conflicts", cellIndex);
+            //console.log("cgfc.DELETING: cellIndex had no conflicts", cellIndex);
             conflictsSet.delete(cellIndex);
         }
         else {
@@ -111,15 +101,16 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         //console.log("cgfc.conflictsSet.end", conflictsSet, "currentValue", currentValue);
     }
 
-    // determine the number of entries that have numbers in them
+    // determine the number of entries that have numbers in them. this can be used to see if the game is over.
     function getGridCount() {
         let boardCountArray = board.filter(function(element) {
             return element !== 0;
         });
         return boardCountArray.length;
     }
+    // update the cell after a normal number was entered
     function updateNormalEntry(key) {
-        showNormalEntryCell();
+        showNormalEntryCell(key);
         let prevConflicts = new Set(conflictedEntries);
         let newConflicts = new Set();
         let completeSetOfConflicts = new Set();
@@ -128,13 +119,13 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         setNewBoardEntry(key);
         // first check the current entry for conflicts
         //console.log("updateNormalEntry.currentNumber", currentNumber);
-        checkGridForConflicts(key, getSelectedIndex(), newConflicts);
+        checkGridForConflicts(getSelectedIndex(), newConflicts);
         completeSetOfConflicts = new Set([...newConflicts]);
         // now check old conflicts and see if they are still conflicts
         prevConflicts.forEach((entry) => {
             newConflicts = new Set();
             //console.log("updateNormalEntry.checking conflictedEntry", entry, " and its value is ", getValueFromIndex(entry));
-            checkGridForConflicts(key, entry, newConflicts);
+            checkGridForConflicts(entry, newConflicts);
             completeSetOfConflicts = new Set([...completeSetOfConflicts, ...newConflicts]);
         });
         //console.log("updateNormalEntry.prevConflicts - End", prevConflicts);
@@ -146,6 +137,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         }
         // calculate keyboard count
         calculateKeyboardCount(key);
+setAutoCandidateValuesOn(key);
     }
 
     // if the Normal button is hit, the number keys are centered
@@ -171,89 +163,90 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             normalKeyboardElement.setAttribute("style", "display: none")
             candidateKeyboardElement.setAttribute("style", "display: grid");
         }
-        //isNormalButton ? updateNormalButtonKeys() : updateCandidateButtonKeys();
         setIsNormalButton(isNormalButton);
     }
 
-    // Handle the selection of a candidate number. Since the array of candidates has to match the initialBoard array
-    // that will be sliced() into chunks, it is just easier to have the candidateValues as the full set (0 to 80)
+    // Handle the selection of a candidate number. 
     function handleCandidateNumber(number) {
         const index = getSelectedIndex();
-        console.log("handleCandidateNumber.index", index, "candidateValues", candidateValues);
-        const newEntries = candidateValues.map((entry) => {
-            if (entry.id == index) {
-                console.log("entry.id == index", entry.id, index, entry.numbers);
-                if (entry.numbers.includes(number)) {
-                    console.log("entry already included ", number);
-                    // we need to remove it...
-                    const newNumbers = entry.numbers.filter(item => item != number);
-                    return {...entry, selected: true, numbers: newNumbers}
-                }
-                else {
-                    // add the new number to the list
-                    console.log("entry does not have ", number);
-                    return {...entry, selected: true, numbers: [...entry.numbers, number]}
-                }
-            }
-            else {
-                return entry;
-            }
-        });
-        console.log("handleCandidateNumber.newEntries", newEntries);
-        setCandidateValues(newEntries);
+        let tempAllData = JSON.parse(JSON.stringify(allData));
+        console.log("handleCandidateNumber.index", index, "candidateValues", allData[index].candidates);
+        if (allData[index].candidates.includes(number)) {
+            console.log("handleCandidateNumber.entry.id == index", index, number);
+            console.log("handleCandidateNumber.entry already included ", number);
+            // we need to remove it...   
+        }
+        else {
+            // add the new number to the list
+            console.log("handleCandidateNumber.entry does not have ", number);
+            tempAllData[index].candidates.push(number);
+        }
+        tempAllData[index].visible = "candidates";
+        setAllData(tempAllData);
     }
 
-    function showNormalEntryCell() {
+    function showNormalEntryCell(number) {
         const index = getSelectedIndex();
-        console.log("showNormalEntryCell.index", index);
-
-        const newEntries = candidateValues.map((entry) => {
-            if (entry.id == index) {
-                console.log("showNormalEntryCell.entry found selectedCell ", index);
-                return {...entry, selected: false}
-            }
-            else {
-                return entry;
-            }
-        });
-        setCandidateValues(newEntries);
+        console.log("showNormalEntryCell.index", index); 
+        // copy the array into temp array, update the properties at index, set the allData state variable
+        let tempAllData = [...allData];
+        tempAllData[index].visible = "number"
+        tempAllData[index].number = number;
+        setAllData(tempAllData);
     }
 
-    function getAutoCandidateValues() {
-        console.log("getAutoCandidateValues().entered");
+    function setAutoCandidateValuesOn(index) {
+        console.log("setAutoCandidateValues().entered with allData", allData);
         let candidates = [];
         let conflicts = {};
+        let tempAllData = JSON.parse(JSON.stringify(allData));
+        console.log("setAutoCandidateValues().tempAllData", tempAllData);
+        // for every cell in the grid
         for (let i = 0; i < 81; i++) {
             let candidateObject = {};
             let autoCandidates = [];
-            //console.log("getAutoCandidateValues", board[i]);
-            if (board[i] != 0) {
+            //console.log("setAutoCandidateValues", board[i]);
+            if (allData[i].number != 0) {
                 // skip entry since a normal number is already there
-                console.log("getAutoCandidateValues setting false with", board[i]);
-                candidateObject = {id: i, selected: false, numbers: []};
+                console.log("setAutoCandidateValues skipping with previous number", i, board[i]);
+                tempAllData[i].visible = "number";
             }
             else {
-                //console.log("getAutoCandidateValues setting true with", board[i]);
+                if (i < 10) console.log("setAutoCandidateValues setting true with", i, board[i]);
+                // for every eligible number, see if it is a good candidate
                 for (let j = 1; j <= 9; j++) {
                     conflicts = new Set();
-                    checkGridForConflicts(j, i, conflicts);
-                    console.log("getAutoCandidateValues().conflicts for ", j, i, conflicts);
-                    if (conflicts.size > 0) {
-                        //autoCandidates.push(j);
-                        //candidateObject = {id: i, selected: true, numbers: [...j]};
-                    }
-                    else {
-                        autoCandidates.push(j);
-                        //candidateObject = {id: i, selected: true, numbers: []}; 
-                    }
+                    currentNumber = j;
+                    checkGridForConflicts(i, conflicts);
+                    if (i < 10) console.log("setAutoCandidatValues.conflicts", i, j, conflicts);
+                    if (conflicts.size == 0) {   
+                         autoCandidates.push(j); 
+                         tempAllData[i].visible = "autos";
+                    }           
                 }
-                candidateObject = {id: i, selected: true, numbers: autoCandidates};
-            }
-            console.log("getAutoCandidates pushing", candidateObject);
-            candidates.push(candidateObject);
+                if (i == index) {
+                    tempAllData[i].visible = "number";
+                }
+                else {
+                    tempAllData[i].visible = "autos";
+                }
+                tempAllData[i].autoCandidates = autoCandidates;
+             }
+            if (i < 10) console.log("setAutoCandidates pushing candidate object", candidateObject);
         }
-        setAutoCandidateValues(candidates);
-        console.log("getAutoCandidates.board", board, candidates);
+        console.log("setAutoCandidates....will push tempAllData", tempAllData);
+        setAllData(tempAllData);
+        // console.log("getAutoCandidates.board", board, candidates);
+    }
+
+    function setAutoCandidateValuesOff(index) {
+        console.log("setAutoCandidateValuesOff");
+        // TOFIX: can we do a shallow copy here?
+        let tempAllData = [...allData];
+        for (let i = 0; i < 81; i++) {
+            tempAllData[i].visible = "number";
+        }
+        setAllData(tempAllData);
     }
 
     // handle keypad entry
@@ -269,25 +262,27 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
         }
     }
 
-    // handle mouse entry
-    // 1. Mouse was clicked in the Board area
-    // 2. Mouse was clicked on the Keyboard area on a number or x
-    // 3. Mouse was clicked in the Keyboard area on the Normal or Candidate button
-    // 4. Mouse was clicked outside of both Board and Keyboard (ignore)
+    // handle mouse input
+    // 1. Mouse clicked on Auto Candidate Mode
+    // 2. Mouse clicked in the Board area
+    // 3. Mouse clicked on the delete button
+    // 4. Mouse clicked in the Keyboard area on the Normal or Candidate button
+    // 5. Mouse clicked on a Candidate entry
+    // 5. Mouse clicked outside of both Board and Keyboard (ignore)
     function handleMouseup(event) {
-        console.log("handleMouseup.mouseUp", event.target, event);
+        console.log("handleMouseup.mouseUp", event.target, event, allData);
         const selectedElement = event.target;
-        //Show Subscripts label or input field was selected...just return
+        // 1. Auto Candidate Mode
         if (selectedElement.tagName == "LABEL" || selectedElement.tagName == "INPUT") {
             if (selectedElement.hasAttribute("ac")) {
-                console.log("handleMouseup.handle auto candidate mode");
-                getAutoCandidateValues();
+                const value = selectedElement.getAttribute("value");
+                console.log("handleMouseup.handle auto candidate mode", value);
+                value === "false" ?  setAutoCandidateValuesOn(-1) : setAutoCandidateValuesOff(-1);
             }
             return;
         }
+        // 2. Board area was clicked.  Was an original number hit??
         const boardSelected = selectedElement.classList.contains("cell");
-
-        // 1. Board area was clicked.  Was an original number hit??
         if (boardSelected) {
             console.log("handleMouseup.boardSelected", selectedElement.tagName);
             const tagName = selectedElement.tagName;
@@ -301,7 +296,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             setSelectedEntry(selectedCell);
             return;
         }
-        // 2. Check the delete button
+        // 3. Check the delete button
         let buttonId = event.target.className;
         console.log("handleMouseup.buttonId", buttonId);
         //console.log("event.target.textContent", event.target.textContent);
@@ -311,7 +306,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
                 updateNormalEntry(0);
                 return;
         }
-        // 3. Check the normal number keypad
+        // 4. Check the normal number keypad
         const isNormal = selectedElement.hasAttribute("normal-number");
         if (isNormal) {
             console.log("handleMouseup.mouseUp normal-number hit");
@@ -322,7 +317,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             return;
         }
        
-        // 4. Handle a Candidate button click
+        // 5. Handle a Candidate button click
         const isCandidate = selectedElement.hasAttribute("candidate-number");
         console.log("handleMouseup.selectedElement", selectedElement, "isCandidate", isCandidate);
         if (isCandidate) {
@@ -332,7 +327,7 @@ export default function useSudoku(board, setBoard, selectedEntry, setSelectedEnt
             return;
         }
 
-        // 5. Either the Normal or Candidate button was pressed
+        // 6. Either the Normal or Candidate button was pressed
         if (selectedElement.tagName == "BUTTON") {
             const isNormalButton = selectedElement.classList.contains("normal-button");
             const isCandidateButton = selectedElement.classList.contains("candidate-button");

@@ -1,6 +1,9 @@
 export default function Candidate({entryIndex, canValue, autoValue, showAutoCandidates, selectedEntry}) {
-
-    let displayValue = canValue.selected || (showAutoCandidates && autoValue.selected) ? "show" : "hide";
+    if (entryIndex < 5) {
+        console.log("Candidate.showAutoCandidates", entryIndex, showAutoCandidates);
+    }
+    // TOFIX: probably dont need this. we can probably hard code "show" in the div
+    let displayValue = "show";
 
     let className = "cell candidate-container";
     let row = Math.floor(entryIndex / 9) ;
@@ -13,8 +16,11 @@ export default function Candidate({entryIndex, canValue, autoValue, showAutoCand
 
     const realNumbers = [1,2,3,4,5,6,7,8,9];
     const canOrAuto = showAutoCandidates ? autoValue : canValue;
+    if (entryIndex < 5) {
+        console.log("Candidates.canOrAuto", canOrAuto);
+    }
     const candidateNumbers = realNumbers.map((number, index) => {
-        if (canOrAuto.numbers.includes(number)) {
+        if (canOrAuto.includes(number)) {
             return number;
         }
         else {

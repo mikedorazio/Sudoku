@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useSudoku from "./hooks/useSudoku";
-import initialBoard, { keyboardNumbers, randomIndex, candidates, autoCandidates } from "./data.js";
+import initialBoard, { keyboardNumbers, theData, randomIndex, candidates, autoCandidates } from "./data.js";
 import Keyboard from "./Keyboard";
 import Box from "./Box.jsx";
 import { Fragment } from "react";
@@ -8,31 +8,24 @@ import ReactConfetti from "react-confetti";
 
 export default function Board() {
     const [board, setBoard] = useState([...initialBoard]);
-    const [chunks, setChunks] = useState(initializeChunks);
-    const [candidateChunks, setCandidateChunks] = useState(initializeCandidateChunks);
-    const [autoCandidateChunks, setAutCandidateChunks] = useState(initializeAutoCandidateChunks);
+    const [allData, setAllData] = useState(theData);
+    const [allChunks, setAllChunks] = useState(initializeAllChunks);
     const [keyboardCount, setKeyboardCount] = useState([...keyboardNumbers]);
     const [showSubscripts, setShowSubscripts] = useState(false);
     const [selectedEntry, setSelectedEntry] = useState(getInitialSelection);
     const [previousNumber, setPreviousNumber] = useState(0);
-    const [candidateValues, setCandidateValues] = useState(candidates);
     const [autoCandidateValues, setAutoCandidateValues] = useState(autoCandidates);
     const [showAutoCandidates, setShowAutoCandidates] = useState(false);
-    const { handleKeyup, handleMouseup, conflictedEntries, isNormalButton, isGameOver } = useSudoku(
-                board,
-                setBoard,
-                selectedEntry,
-                setSelectedEntry,
+    const { handleKeyup, handleMouseup, conflictedEntries, isGameOver } = useSudoku(
+                board, setBoard,
+                allData, setAllData,
+                selectedEntry, setSelectedEntry,
                 setKeyboardCount,
-                previousNumber,
-                setPreviousNumber,
-                candidateValues,
-                setCandidateValues,
-                autoCandidateValues,
-                setAutoCandidateValues,
+                previousNumber, setPreviousNumber,
+                autoCandidateValues, setAutoCandidateValues,
     );
 
-    console.log("Board Component rendering", board, "candidates", candidateValues, "autoCandidates", autoCandidateValues);
+    console.log("Board Component rendering", allData);
 
     function getInitialSelection() {
         const firstZero = initialBoard.findIndex((element) => element === 0);
@@ -42,25 +35,10 @@ export default function Board() {
         return row + "," + col;
     }
 
-    function initializeChunks() {
+    function initializeAllChunks() {
         let chunks = [];
-        for (let i = 0; i < initialBoard.length; i += 3) {
-            chunks.push(initialBoard.slice(i, i + 3));
-        }
-        return chunks;
-    }
-    function initializeCandidateChunks() {
-        let chunks = [];
-        for (let i = 0; i < candidates.length; i += 3) {
-            chunks.push(candidates.slice(i, i + 3));
-        }
-        return chunks;
-    }
-
-    function initializeAutoCandidateChunks() {
-        let chunks = [];
-        for (let i = 0; i < autoCandidates.length; i += 3) {
-            chunks.push(autoCandidates.slice(i, i + 3));
+        for (let i = 0; i < allData.length; i += 3) {
+            chunks.push(allData.slice(i, i + 3));
         }
         return chunks;
     }
@@ -74,19 +52,13 @@ export default function Board() {
 
     useEffect(() => {
         //console.log("Board useEffect is rendering", board, candidateValues);
-        let myChunks = [];
-        let canChunks = [];
         let aChunks = [];
         for (let i = 0; i < initialBoard.length; i += 3) {
-            myChunks.push(board.slice(i, i + 3));
-            canChunks.push(candidateValues.slice(i, i + 3));
-            aChunks.push(autoCandidateValues.slice(i, i + 3));
+            aChunks.push(allData.slice(i, i + 3));
         }
         //console.log("Board.useEffect setting chunks", myChunks);
-        setChunks(myChunks);
-        setCandidateChunks(canChunks);
-        setAutCandidateChunks(aChunks);
-    }, [board, candidateValues, autoCandidateValues]);
+        setAllChunks(aChunks);
+    }, [board, allData]);
 
     useEffect(() => {
         window.addEventListener("keyup", handleKeyup);
@@ -108,14 +80,12 @@ export default function Board() {
             <h1>Apostle John's Sudoku Game (# {randomIndex + 1}) </h1>
             <div className="board-keyboard-container">
                 <div className="sudoku-board" id="sudoku-board">
-                    {chunks.map((chunk, index) => (
+                    {allChunks.map((chunk, index) => (
                         <Fragment key={index}>
                             <div className="box" rownumber={Math.floor(index / 9)}>
                                 <Box
                                     key={index}
-                                    chunk={chunk}
-                                    canChunk={candidateChunks[index]}
-                                    autoChunk={autoCandidateChunks[index]}
+                                    allChunk={allChunks[index]}
                                     originalValues={initialBoard}
                                     chunkIndex={index}
                                     selectedEntry={selectedEntry}

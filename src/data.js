@@ -63,16 +63,27 @@ for (let i = 1; i <= 9; i++) {
     keyboardNumbers[i-1] = initialBoard.filter(v => v == i).length;
 }
 
+// get an array of all potential candidate entries for every cell
 export let candidates = [];
 for (let i = 0; i < 81; i++) {
     const candidateObject = {id: i, selected: false, numbers: []};
     candidates.push(candidateObject);
 }
 
+// get an array of all potential auto candidates for every cell
 export let autoCandidates = [];
 for (let i = 0; i < 81; i++) {
     const candidateObject = {id: i, selected: false, numbers: []};
     autoCandidates.push(candidateObject);
+}
+
+// combine the numbers, candidates and autos to make an object that will be used 
+// for the entire application
+
+export let theData = [];
+for (let i = 0; i < 81; i++) {
+    let currentEntry = {id: i, number: initialBoard[i], candidates: [], autoCandidates: [], visible: "number"};
+    theData.push(currentEntry);
 }
 
 export default initialBoard;

@@ -1,7 +1,6 @@
-export default function Cell({ value, canValue, autoValue, originalValue, entryIndex, selectedEntry, conflict, showSubscripts, showAutoCandidates }) {
-
+export default function Cell({allData, originalValue, entryIndex, selectedEntry, conflict, showSubscripts }) {
     // only original values should have tile-start attribute
-    let className = (value == originalValue && value != 0) ? "cell tile-start" : "cell";
+    let className = (allData.number == originalValue && allData.number != 0) ? "cell tile-start" : "cell";
 
     let row = Math.floor(entryIndex / 9) ;
     let column = entryIndex % 9;
@@ -16,18 +15,17 @@ export default function Cell({ value, canValue, autoValue, originalValue, entryI
         className = className + " conflict";
         //className = className + " subscript-circle"
     }
-
-    if (entryIndex < 3) {
-        console.log("Cell.canValue", canValue.selected, "showAuto", autoValue.selected);
+    
+    //let displayValue = canValue.selected || (showAutoCandidates && autoValue.selected) ? "hide" : "show";
+    
+    if (entryIndex < 7) {
+        console.log("Cell.allData", allData);
     }
-    
-    let displayValue = canValue.selected || (showAutoCandidates && autoValue.selected) ? "hide" : "show";
-    
-   
     //console.log("Cell.entryIndex", entryIndex, "row", row, "column", column, "rowColumn", rowColumn, "origValue", originalValue);
 
     return (
-        <div key={entryIndex} className={className} rowcol={rowColumn} displayvalue={displayValue}  numbervalue={value}> {value != 0 ? value : " "} 
+        <div key={entryIndex} className={className} rowcol={rowColumn} displayvalue="show"
+                                            numbervalue={allData.number}> {allData.number != 0 ? allData.number : " "} 
             {showSubscripts
             ?
             <sub className="entry-subscript">{entryIndex}</sub>
