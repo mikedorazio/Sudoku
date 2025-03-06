@@ -273,9 +273,10 @@ setAutoCandidateValuesOn(key);
         console.log("handleMouseup.mouseUp", event.target, event, allData);
         const selectedElement = event.target;
         // 1. Auto Candidate Mode
-        if (selectedElement.tagName == "LABEL" || selectedElement.tagName == "INPUT") {
+        if (selectedElement.tagName == "LABEL") {
             if (selectedElement.hasAttribute("ac")) {
-                const value = selectedElement.getAttribute("value");
+                const inputChildElement = selectedElement.childNodes[0];
+                const value = inputChildElement.getAttribute("value");
                 console.log("handleMouseup.handle auto candidate mode", value);
                 value === "false" ?  setAutoCandidateValuesOn(-1) : setAutoCandidateValuesOff(-1);
             }

@@ -3,7 +3,7 @@ export default function Candidate({entryIndex, canValue, autoValue, showAutoCand
         console.log("Candidate.showAutoCandidates", entryIndex, showAutoCandidates);
     }
     // TOFIX: probably dont need this. we can probably hard code "show" in the div
-    let displayValue = "show";
+    //let displayValue = "show";
 
     let className = "cell candidate-container";
     let row = Math.floor(entryIndex / 9) ;
@@ -32,7 +32,7 @@ export default function Candidate({entryIndex, canValue, autoValue, showAutoCand
         console.log("Candidate.numbers" + canValue.numbers);
     }
     return (
-        <div className={className} rowcol={rowColumn} displayvalue={displayValue} entryindex={entryIndex} row="0">
+        <div className={className} rowcol={rowColumn} displayvalue="show" entryindex={entryIndex} row="0">
             {realNumbers.map((number, index) => {
                 return <div key={index} className="cell-candidate" sub={number}>
                          {candidateNumbers[index]}

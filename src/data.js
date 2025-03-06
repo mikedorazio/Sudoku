@@ -79,7 +79,6 @@ for (let i = 0; i < 81; i++) {
 
 // combine the numbers, candidates and autos to make an object that will be used 
 // for the entire application
-
 export let theData = [];
 for (let i = 0; i < 81; i++) {
     let currentEntry = {id: i, number: initialBoard[i], candidates: [], autoCandidates: [], visible: "number"};
